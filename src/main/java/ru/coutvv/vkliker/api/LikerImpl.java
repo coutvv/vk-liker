@@ -1,4 +1,4 @@
-package ru.coutvv.vkliker;
+package ru.coutvv.vkliker.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +14,19 @@ import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 
+import ru.coutvv.vkliker.data.Post;
+
 /**
  * Реализация лайкера посредством vk api sdk
  * 
  * @author lomovtsevrs
  */
-public class Liker implements LikerControl {
+public class LikerImpl implements Liker {
 
 	private final UserActor actor;
 	private final VkApiClient vk;
 	
-	public Liker(int userId, String token) {
+	public LikerImpl(int userId, String token) {
 		actor = new UserActor(userId, token);
 		TransportClient tc = HttpTransportClient.getInstance();
 		vk = new VkApiClient(tc, new Gson());

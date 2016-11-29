@@ -1,8 +1,15 @@
-package ru.coutvv.vkliker;
+package ru.coutvv.vkliker.api;
 
 import java.util.List;
 
-public interface LikerControl {
+import ru.coutvv.vkliker.data.Post;
+
+/**
+ * Интерфейс лайкания постов в ВК
+ * 
+ * @author lomovtsevrs
+ */
+public interface Liker {
 
 	/**
 	 * получить последние посты в ленте

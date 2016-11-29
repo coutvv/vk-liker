@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+import ru.coutvv.vkliker.api.Liker;
+import ru.coutvv.vkliker.api.LikerImpl;
+import ru.coutvv.vkliker.data.Post;
+
 /**
  * Входная точка
  * 
@@ -25,9 +29,9 @@ public class Main {
 	/**
 	 * милый лайкер ^_^
 	 */
-	final LikerControl liker;
+	final Liker liker;
 	
-	public LikerControl getLiker() {return liker;}
+	public Liker getLiker() {return liker;}
 	
 	public Main() throws IOException {
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream(FILENAME);
@@ -35,11 +39,11 @@ public class Main {
 		props.load(in);
 		String token = props.getProperty("token");
 		String userId = props.getProperty("userId");
-		liker = new Liker(Integer.parseInt(userId), token);
+		liker = new LikerImpl(Integer.parseInt(userId), token);
 	}
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
-		LikerControl liker = new Main().getLiker();
+		Liker liker = new Main().getLiker();
 		List<Post> posts = liker.getLastNews(20);
 		for(Post post : posts) {
 			liker.likePost(post);
