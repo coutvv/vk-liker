@@ -50,8 +50,13 @@ public class LikerImpl implements Liker {
 		JsonArray items = response.getAsJsonObject().get("items").getAsJsonArray();
 		for(int i = 0; i < items.size(); i++ ) {
 			JsonObject item = items.get(i).getAsJsonObject();
-			System.out.println(item);
+			
 			String type = item.get("type").getAsString();
+			try { 
+				System.out.println(item.get("text").getAsString());
+			} catch(Exception e) {
+				System.err.println(type);
+			}
 			if(type.equalsIgnoreCase("post")) {
 				int source_id = item.get("source_id").getAsInt();
 				int post_id = item.get("post_id").getAsInt();
@@ -67,10 +72,18 @@ public class LikerImpl implements Liker {
 						"\"item_id\" : " + post.getPostId() + "});";
 		try {
 			vk.execute().code(actor, script).execute();
+			likeCount++;
 		} catch (ApiException e) {
 			e.printStackTrace();
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}
 	}
+
+	private int likeCount = 0;
+
+	public int getLikeCount() {
+		return likeCount;
+	}
+	
 }

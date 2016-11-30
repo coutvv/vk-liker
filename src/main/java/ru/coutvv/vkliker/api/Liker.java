@@ -23,4 +23,10 @@ public interface Liker {
 	 * @param post
 	 */
 	public void likePost(Post post);
+	
+	/**
+	 * Количество лайкнутого 
+	 * @return
+	 */
+	int getLikeCount();
 }

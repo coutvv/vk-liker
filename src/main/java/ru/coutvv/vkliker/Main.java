@@ -45,10 +45,13 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException, IOException {
 		Liker liker = new Main().getLiker();
 		List<Post> posts = liker.getLastNews(20);
+		System.out.println("\n Wait for it!");
 		for(Post post : posts) {
 			liker.likePost(post);
+			
 			Thread.sleep(SLEEP_TIME);
 		}
+		System.out.println("Количество лайкнутого: " + liker.getLikeCount());
 	}
 	
 }
