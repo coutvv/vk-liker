@@ -44,7 +44,7 @@ public class Main {
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
 		Liker liker = new Main().getLiker();
-		List<Post> posts = liker.getLastNews(20);
+		List<Post> posts = liker.getLastNews(50); //видимо 50 эт максимум, блеать =(
 		System.out.println("\n Wait for it!");
 		for(Post post : posts) {
 			liker.likePost(post);

@@ -52,11 +52,7 @@ public class LikerImpl implements Liker {
 			JsonObject item = items.get(i).getAsJsonObject();
 			
 			String type = item.get("type").getAsString();
-			try { 
-				System.out.println(item.get("text").getAsString());
-			} catch(Exception e) {
-				System.err.println(type);
-			}
+			printPost(item);
 			if(type.equalsIgnoreCase("post")) {
 				int source_id = item.get("source_id").getAsInt();
 				int post_id = item.get("post_id").getAsInt();
@@ -64,6 +60,22 @@ public class LikerImpl implements Liker {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Печатаем чо за пост
+	 * @param item
+	 */
+	private void printPost(JsonObject item) {
+		System.out.println("<[BEGINPOST]>");
+		try { 
+			
+			System.out.println(item);
+		} catch(Exception e) {
+			System.out.println(item.get("type").getAsString());
+		}
+		System.out.println("<[ENDOFPOST]>");
+		System.out.println();
 	}
 	
 	public void likePost(Post post) {
