@@ -25,9 +25,11 @@ public class LikerImpl implements Liker {
 
 	private final UserActor actor;
 	private final VkApiClient vk;
+	private final int userId;
 	
 	public LikerImpl(int userId, String token) {
 		actor = new UserActor(userId, token);
+		this.userId = userId;
 		TransportClient tc = HttpTransportClient.getInstance();
 		vk = new VkApiClient(tc, new Gson());
 	}
@@ -56,7 +58,7 @@ public class LikerImpl implements Liker {
 			if(type.equalsIgnoreCase("post")) {
 				int source_id = item.get("source_id").getAsInt();
 				int post_id = item.get("post_id").getAsInt();
-				result.add(new Post(type, source_id, post_id));
+				if(source_id != userId ) result.add(new Post(type, source_id, post_id)); //условие чтобы не лайкать свои комменты
 			}
 		}
 		return result;
