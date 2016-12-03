@@ -54,14 +54,19 @@ public class LikerImpl implements Liker {
 			JsonObject item = items.get(i).getAsJsonObject();
 			
 			String type = item.get("type").getAsString();
+			
 			printPost(item);
-			if(type.equalsIgnoreCase("post")) {
+			if(canLike(item) && type.equalsIgnoreCase("post")) {
 				int source_id = item.get("source_id").getAsInt();
 				int post_id = item.get("post_id").getAsInt();
 				if(source_id != userId ) result.add(new Post(type, source_id, post_id)); //условие чтобы не лайкать свои комменты
 			}
 		}
 		return result;
+	}
+	
+	private boolean canLike(JsonObject item) {
+		return item.get("likes").getAsJsonObject().get("can_like").getAsInt() == 1;
 	}
 	
 	/**
