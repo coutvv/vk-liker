@@ -66,7 +66,13 @@ public class LikerImpl implements Liker {
 	}
 	
 	private boolean canLike(JsonObject item) {
-		return item.get("likes").getAsJsonObject().get("can_like").getAsInt() == 1;
+		boolean result = false;
+		try {
+			result =  item.get("likes").getAsJsonObject().get("can_like").getAsInt() == 1;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	/**
