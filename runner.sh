@@ -1,5 +1,8 @@
-if [ -f "target/vk-liker-jar-with-dependencies.jar" ]; then
-    exec java -jar target/vk-liker-jar-with-dependencies.jar
+#!/bin/bash
+FILE="target/vk-liker-jar-with-dependencies.jar"
+
+if [ ! -f $FILE]; then
+	echo "Oops! Executing  $FILE not found!"
 else 
-	echo "Oops! Executing file not found!"
+	exec java -jar $FILE
 fi
