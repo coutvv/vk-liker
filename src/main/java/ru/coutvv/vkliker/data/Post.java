@@ -6,17 +6,31 @@ package ru.coutvv.vkliker.data;
  * @author lomovtsevrs
  */
 public class Post {
-	String type;
-	int sourceId;
-	int postId;
 	
-	public Post(String type, int source, int post) {
-		this.type = type;
+	long postId;
+	long sourceId;
+	String ownerName;
+
+	public Post(String ownerName, long source, long post) {
+		this.ownerName = ownerName;
 		sourceId = source;
 		postId = post;
 	}
+
+	public long getSourceId() {
+		return sourceId;
+	}
+
+	public long getPostId() {
+		return postId;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
 	
-	public String getType() {return type;}
-	public int getSourceId() {return sourceId;}
-	public int getPostId() {return postId;}
+	@Override
+	public String toString() {
+		return "user: " + ownerName + "\t|\tid: " + postId;
+	}
 }
