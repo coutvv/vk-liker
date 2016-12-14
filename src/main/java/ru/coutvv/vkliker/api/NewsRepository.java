@@ -23,13 +23,11 @@ public class NewsRepository implements NewsFeed {
 	
 	private final UserActor actor;
 	private final VkApiClient vk;
-	private final int userId;
 	
-	public NewsRepository(int userId, String token) {
-		actor = new UserActor(userId, token);
-		this.userId = userId;
-		TransportClient tc = HttpTransportClient.getInstance();
-		vk = new VkApiClient(tc, new Gson());
+	public NewsRepository(UserActor actor, VkApiClient vk) {
+		super();
+		this.actor = actor;
+		this.vk = vk;
 	}
 
 	//час в миллисекундах
@@ -70,16 +68,15 @@ public class NewsRepository implements NewsFeed {
 		
 		Map<Long, String> friends = parsePersons(response);
 		Map<Long, String> groups = parseGroups(response);
-		
 		for(int i = 0; i < items.size(); i++ ) {
 			JsonObject item = items.get(i).getAsJsonObject();
-			
 			long sourceId = item.get("source_id").getAsLong();
 			long postId = item.get("post_id").getAsInt();
 			
+			boolean isLike = item.get("likes").getAsJsonObject().get("can_like").getAsInt() == 0; //залайкано?
 			String ownerName = (sourceId > 0) ? friends.get(sourceId) : groups.get(-sourceId);
-			if(sourceId != userId ) {//условие чтобы не лайкать свои комменты
-				result.add(new Post(ownerName, sourceId, postId)); 
+			if(sourceId != actor.getId() ) {//условие чтобы не лайкать свои комменты
+				result.add(new Post(ownerName, sourceId, postId, isLike)); 
 			}
 
 		}
@@ -126,6 +123,7 @@ public class NewsRepository implements NewsFeed {
 	 * @param posts
 	 * @return
 	 */
+	@Deprecated
 	private List<Post> filterFromGroups(List<Post> posts) {
 		LinkedList<Post> result = new LinkedList<>(posts);
 		for(Post p : result) {
