@@ -12,11 +12,16 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 
 import ru.coutvv.vkliker.data.Post;
 
+/**
+ * Менеджер для управления новостной лентой
+ * 
+ * @author lomovtsevrs
+ */
 public class FeedManager {
 	private final UserActor actor;
 	private final VkApiClient vk;
 	
-	private final NewsFeed feed;
+	private final FeedRepository feed;
 	private final PostLiker liker;
 	
 	public FeedManager(int userId, String token) {
@@ -24,10 +29,15 @@ public class FeedManager {
 		TransportClient tc = HttpTransportClient.getInstance();
 		vk = new VkApiClient(tc, new Gson());
 		
-		feed = new NewsRepository(actor, vk);
+		feed = new FeedRepository(actor, vk);
 		liker = new PostLiker(actor, vk);
 	}
 	
+	/**
+	 * Залайкать все новости в ленте за последние hours часов
+	 * 
+	 * @param hours
+	 */
 	public void likeAllLastHours(int hours) {
 		List<Post> posts = feed.getLastPosts(hours);
 		Random rand = new Random();
@@ -47,6 +57,11 @@ public class FeedManager {
 		}
 	}
 	
+	/**
+	 * Периодически лайкать всю ленту
+	 * 
+	 * @param minutes -- период в минутах
+	 */
 	public void scheduleLike(int minutes) {
 		new Thread(new Runnable() {
 			
@@ -56,7 +71,8 @@ public class FeedManager {
 				try {
 					System.out.println("[ lets like my feed forever ]");
 					for(;;) {
-						likeAllLastHours(1);
+						int hours = minutes/60 + 1;//период за который получим новости
+						likeAllLastHours(hours);
 						System.out.println("[ waiting next session ] this ended at " + new Date());
 
 						Thread.sleep(minutes*60*1000);

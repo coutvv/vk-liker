@@ -2,29 +2,30 @@ package ru.coutvv.vkliker.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.httpclient.HttpTransportClient;
 
 import ru.coutvv.vkliker.data.Post;
 
-public class NewsRepository implements NewsFeed {
+/**
+ * Отвечает за получение и парсинг данных
+ * 
+ * @author lomovtsevrs
+ */
+public class FeedRepository {
 	
 	private final UserActor actor;
 	private final VkApiClient vk;
 	
-	public NewsRepository(UserActor actor, VkApiClient vk) {
+	public FeedRepository(UserActor actor, VkApiClient vk) {
 		super();
 		this.actor = actor;
 		this.vk = vk;
@@ -33,33 +34,32 @@ public class NewsRepository implements NewsFeed {
 	//час в миллисекундах
 	private static final long HOUR_AGO = 60*60*1000;
 
-	@Override
-	public List<Post> getLastPosts(int hour) {
-		long time = (System.currentTimeMillis() - HOUR_AGO * hour)/1000;
+	
+	/**
+	 * Получение постов за последние hours часов
+	 * @param hours
+	 * @return
+	 */
+	public List<Post> getLastPosts(int hours) {
+		long time = (System.currentTimeMillis() - HOUR_AGO * hours)/1000;
 		String script = configurateScript(time, null);
 		return parsePosts(runScript(script));
 	}
 
-	@Override
+	
+	/**
+	 * Получение последних постов в количестве count штук
+	 * @param count
+	 * @return
+	 */
 	public List<Post> getLastCountPosts(int count) {
 		String script = configurateScript(null, count);
 		return parsePosts(runScript(script));
 	}
 
-	@Override
-	public List<Post> getLastPersonPosts(int hour) {
-		return filterFromGroups(getLastPosts(hour));
-	}
-
-	@Override
-	public List<Post> getLastCountPersonPosts(int count) {
-		return filterFromGroups(getLastCountPosts(count));
-	}
-	
-	
 	/**
-	 * Парсинг полученного jsona
-	 * @param response
+	 * Парсинг jsona  
+	 * @param response -- список постов 
 	 * @return
 	 */
 	private List<Post>  parsePosts(JsonElement response) {
@@ -119,23 +119,6 @@ public class NewsRepository implements NewsFeed {
 	}
 	
 	/**
-	 * Убираем из списка 
-	 * @param posts
-	 * @return
-	 */
-	@Deprecated
-	private List<Post> filterFromGroups(List<Post> posts) {
-		LinkedList<Post> result = new LinkedList<>(posts);
-		for(Post p : result) {
-			if(p.getOwnerName() == null || p.getOwnerName().equals("null")) {
-				result.remove(p);
-			}
-		}
-		return result;
-	}
-
-	
-	/**
 	 * Запускаем сценария получения json-объекта с постами
 	 * @param script
 	 * @return
@@ -159,16 +142,13 @@ public class NewsRepository implements NewsFeed {
 	 * @return
 	 */
 	private String configurateScript(Long startTime, Integer count) {
-		
-		String startTimeScript = startTime!=null ? "\"start_time\" : \"" + startTime + "\",  " : "";
-		String countScript = count != null ? "\"count\" : \"" + count +  "\",  " : "";
-		
 		String script = "return API.newsfeed.get({" +
-				startTimeScript +
-				countScript +
+				( startTime == null ? "" : "\"start_time\" : \"" + startTime + "\",  " ) +
+				( count     == null ? "" : "\"count\" : \"" + count +  "\",  " ) +
 				"\"return_banned\" : \"" + 1 +  "\",  "+
 				"\"filters\" : \"" + "post" +  "\",  "+
 				"});";
+		
 		return script;
 	}
 
