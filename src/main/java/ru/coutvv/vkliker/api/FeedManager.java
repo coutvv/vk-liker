@@ -48,7 +48,7 @@ public class FeedManager {
 	}
 	
 	public void scheduleLike(int minutes) {
-		Thread t = new Thread(new Runnable() {
+		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -65,7 +65,7 @@ public class FeedManager {
 					e.printStackTrace();
 				}
 			}
-		});
+		}).start();
 	}
 	
 }

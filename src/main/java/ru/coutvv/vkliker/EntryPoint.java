@@ -2,7 +2,6 @@ package ru.coutvv.vkliker;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.Properties;
 
 import ru.coutvv.vkliker.api.FeedManager;
@@ -15,9 +14,8 @@ public class EntryPoint {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
-
-		final long timeToSleep = 2*60*60*1000;
 		initFeedManager();
+		
 		if(args.length == 1 && args[0].equals("loop")) {
 			fm.scheduleLike(15);
 		} else {
