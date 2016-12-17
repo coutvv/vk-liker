@@ -10,6 +10,8 @@ Liking all posts in newsfeed in the great russian social network "vk.com"
 
 запускаем runner.sh ^_^ наслаждаемся!
 
+Для того чтобы лайкер, лайкал постоянно запускаем runnerLoop.sh ^_^ и наслаждаемся! Каждые 15 минут будет лайкаться весь feed!
+
 
 ### Prerequisites
 
