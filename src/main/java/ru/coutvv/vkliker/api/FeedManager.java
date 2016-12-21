@@ -24,6 +24,13 @@ public class FeedManager {
 	private final FeedRepository feed;
 	private final PostLiker liker;
 	
+	public FeedManager(UserActor actor, VkApiClient vkClient) {
+		this.actor = actor;
+		this.vk = vkClient;
+		feed = new FeedRepository(actor, vk);
+		liker = new PostLiker(actor, vk);
+	}
+	
 	public FeedManager(int userId, String token) {
 		actor = new UserActor(userId, token);
 		TransportClient tc = HttpTransportClient.getInstance();

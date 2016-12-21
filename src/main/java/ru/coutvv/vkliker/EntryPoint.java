@@ -18,8 +18,13 @@ public class EntryPoint {
 	static FeedManager fm;
 
 	public static void main(String[] args) {
-		
-		initFeedManager();
+		Factory fac = null;
+		try {
+			fac = new Factory(FILENAME);
+			fm = fac.createFeedManager();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		if(args.length == 1 && args[0].equals("loop")) {
 			fm.scheduleLike(15);
@@ -28,27 +33,5 @@ public class EntryPoint {
 		}
 		
 	}
-	
-	static void initFeedManager() {
-		InputStream in = EntryPoint.class.getClassLoader().getResourceAsStream(FILENAME); 
-		try {
-			Properties props = new Properties();
-			props.load(in);
-			
-			String token = props.getProperty("token");
-			int id = Integer.parseInt(props.getProperty("userId"));
-			fm = new FeedManager(id, token);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Не удалось получить данные из файла app.properties");
-		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	
 	
 }

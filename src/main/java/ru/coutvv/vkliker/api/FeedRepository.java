@@ -26,7 +26,6 @@ public class FeedRepository {
 	private final VkApiClient vk;
 	
 	public FeedRepository(UserActor actor, VkApiClient vk) {
-		super();
 		this.actor = actor;
 		this.vk = vk;
 	}
