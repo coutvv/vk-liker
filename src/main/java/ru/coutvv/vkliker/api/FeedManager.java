@@ -14,6 +14,7 @@ import ru.coutvv.vkliker.data.entity.Comment;
 import ru.coutvv.vkliker.data.entity.Post;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.data.repository.PostRepository;
+import ru.coutvv.vkliker.util.LagUtil;
 
 /**
  * Менеджер для управления новостной лентой
@@ -46,17 +47,10 @@ public class FeedManager {
 		List<Post> posts = feed.getLastPosts(hours);
 		Random rand = new Random();
 		for(Post post: posts) {
-			long delta = Math.round(rand.nextDouble()*500),
-				 timeSleep = 500 + (rand.nextBoolean() ? delta : -delta);
 			
 			if(!post.isLiked()) {
 				liker.like(post);
-				
-				try {
-					Thread.sleep(timeSleep);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				LagUtil.lag();
 			}
 				
 		}
@@ -73,11 +67,7 @@ public class FeedManager {
 			List<Comment> comments = coms.getComments(post);
 			post.setComments(comments);
 			liker.likeAllComments(post, 500);
-			try {
-				Thread.sleep(new Random().nextInt(500) + 500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			LagUtil.lag();
 		}
 	}
 	
@@ -91,18 +81,13 @@ public class FeedManager {
 			
 			@Override
 			public void run() {
-				
-				try {
-					System.out.println("[ lets like my feed forever ]");
-					for(;;) {
-						int hours = minutes/60 + 1;//период за который получим новости
-						likeAllLastHours(hours);
-						System.out.println("[ waiting next session ] this ended at " + new Date());
+				System.out.println("[ lets like my feed forever ]");
+				for(;;) {
+					int hours = minutes/60 + 1;//период за который получим новости
+					likeAllLastHours(hours);
+					System.out.println("[ waiting next session ] this ended at " + new Date());
 
-						Thread.sleep(minutes*60*1000);
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					LagUtil.lag(minutes*60*1000);
 				}
 			}
 		}).start();

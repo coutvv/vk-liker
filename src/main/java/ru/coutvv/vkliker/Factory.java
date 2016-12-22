@@ -15,6 +15,7 @@ import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.api.Liker;
 import ru.coutvv.vkliker.data.entity.Comment;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
+import ru.coutvv.vkliker.data.repository.LikesRepository;
 
 /**
  * Фабрика для создавания всяких интересеных штук
@@ -59,5 +60,8 @@ public class Factory {
 		return new Liker(actor, vk);
 	}
 	
+	public LikesRepository createLikesRepository() {
+		return new LikesRepository(actor, vk);
+	}
 	
 }

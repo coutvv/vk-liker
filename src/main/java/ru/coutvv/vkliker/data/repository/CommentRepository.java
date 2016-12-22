@@ -37,17 +37,38 @@ public class CommentRepository extends Repository {
 			JsonArray comments = json.getAsJsonObject().get("items").getAsJsonArray();
 			for(int i = 0; i < comments.size(); i++) {
 				JsonObject com = comments.get(i).getAsJsonObject();
-				result.add(new Comment(com));
+				result.add(new Comment(com, postId, ownerId));
 			}
 		} catch (ApiException | ClientException e) {
 			e.printStackTrace();
 		}
-		System.out.println(result);
 		return result;
 	}
 	
 	public List<Comment> getComments(Post post) {
 		return getComments(post.getSourceId(), post.getPostId());
+	}
+	
+	public List<Comment> getCommentsWithOffset(long ownerId, long postId, int count, int offset) {
+		String script = "return API.wall.getComments({" +
+				"\"owner_id\" : " + ownerId + "," +
+				"\"post_id\" : " + postId + "," +
+				"\"offset\" : " + offset + "," +
+				"\"count\" : " + count + "," +
+				"});";
+		List<Comment> result = new ArrayList<Comment>();
+		try {
+			JsonElement json = vk.execute().code(actor, script).execute();
+			System.out.println(json);
+			JsonArray comments = json.getAsJsonObject().get("items").getAsJsonArray();
+			for(int i = 0; i < comments.size(); i++) {
+				JsonObject com = comments.get(i).getAsJsonObject();
+				result.add(new Comment(com, postId, ownerId));
+			}
+		} catch (ApiException | ClientException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 }

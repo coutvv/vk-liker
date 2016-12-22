@@ -6,16 +6,27 @@ import com.google.gson.JsonObject;
 
 public class Comment {
 
+	/**
+	 * идшники поста и его хозяина
+	 */
+	private final long postId;
+	private final long postOwnerId;
+	
+	/**
+	 * идшники комментария и его хозяина
+	 */
 	private final long ownerId;
 	private final long commentId;
 	private final long date;
 	private final String text;
 	
-	public Comment(JsonObject json) {
-		ownerId = json.get("from_id").getAsLong();
-		commentId = json.get("id").getAsLong();
-		date = json.get("date").getAsLong();
-		text = json.get("text").getAsString();
+	public Comment(JsonObject json, long postId, long postOwnerId) {
+		this.ownerId = json.get("from_id").getAsLong();
+		this.commentId = json.get("id").getAsLong();
+		this.date = json.get("date").getAsLong();
+		this.text = json.get("text").getAsString();
+		this.postId = postId;
+		this.postOwnerId = postOwnerId;
 	}
 	
 	public String toString() {
@@ -40,5 +51,13 @@ public class Comment {
 
 	public String getText() {
 		return text;
+	}
+
+	public long getPostId() {
+		return postId;
+	}
+
+	public long getPostOwnerId() {
+		return postOwnerId;
 	}
 }
