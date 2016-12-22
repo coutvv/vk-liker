@@ -29,9 +29,9 @@ public class EntryPoint {
 		if(args.length == 1 && args[0].equals("loop")) {
 			fm.scheduleLike(15);
 		} else {
-			fm.likeAllLastHours(2);
+//			fm.likeAllLastHoursWithComments(8);
 		}
-		
+		fac.createCommentRepository().getComments(-55155418, 103131);
 	}
 	
 }

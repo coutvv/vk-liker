@@ -1,4 +1,6 @@
-package ru.coutvv.vkliker.data;
+package ru.coutvv.vkliker.data.entity;
+
+import java.util.List;
 
 /**
  * Данные для поста, который лайкнем
@@ -12,6 +14,7 @@ public class Post {
 	String ownerName;
 	boolean isLiked;
 
+	List<Comment> comments;
 
 	public Post(String ownerName, long source, long post, boolean isLiked) {
 		this.ownerName = ownerName;
@@ -19,6 +22,7 @@ public class Post {
 		postId = post;
 		this.isLiked = isLiked;
 	}
+
 
 	public long getSourceId() {
 		return sourceId;
@@ -34,6 +38,14 @@ public class Post {
 
 	public boolean isLiked() {
 		return isLiked;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 	
 	@Override

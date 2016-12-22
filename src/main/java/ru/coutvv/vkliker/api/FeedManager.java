@@ -10,7 +10,10 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 
-import ru.coutvv.vkliker.data.Post;
+import ru.coutvv.vkliker.data.entity.Comment;
+import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.repository.CommentRepository;
+import ru.coutvv.vkliker.data.repository.PostRepository;
 
 /**
  * Менеджер для управления новостной лентой
@@ -21,23 +24,17 @@ public class FeedManager {
 	private final UserActor actor;
 	private final VkApiClient vk;
 	
-	private final FeedRepository feed;
-	private final PostLiker liker;
+	private final PostRepository feed;
+	private final Liker liker;
+	private final CommentRepository coms;
 	
 	public FeedManager(UserActor actor, VkApiClient vkClient) {
 		this.actor = actor;
 		this.vk = vkClient;
-		feed = new FeedRepository(actor, vk);
-		liker = new PostLiker(actor, vk);
-	}
-	
-	public FeedManager(int userId, String token) {
-		actor = new UserActor(userId, token);
-		TransportClient tc = HttpTransportClient.getInstance();
-		vk = new VkApiClient(tc, new Gson());
+		feed = new PostRepository(actor, vk);
+		liker = new Liker(actor, vk);
+		coms = new CommentRepository(actor, vk);
 		
-		feed = new FeedRepository(actor, vk);
-		liker = new PostLiker(actor, vk);
 	}
 	
 	/**
@@ -54,6 +51,7 @@ public class FeedManager {
 			
 			if(!post.isLiked()) {
 				liker.like(post);
+				
 				try {
 					Thread.sleep(timeSleep);
 				} catch (InterruptedException e) {
@@ -61,6 +59,25 @@ public class FeedManager {
 				}
 			}
 				
+		}
+	}
+	
+	/**
+	 * Лайкаем все посты с комментариями
+	 * @param hours
+	 */
+	public void likeAllLastHoursWithComments(int hours) {
+		List<Post> posts = feed.getLastPosts(hours);
+		likeAllLastHours(hours);
+		for(Post post : posts) {
+			List<Comment> comments = coms.getComments(post);
+			post.setComments(comments);
+			liker.likeAllComments(post, 500);
+			try {
+				Thread.sleep(new Random().nextInt(500) + 500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

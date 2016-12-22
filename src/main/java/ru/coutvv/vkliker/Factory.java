@@ -11,10 +11,10 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 
-import ru.coutvv.vkliker.api.CommentRepository;
 import ru.coutvv.vkliker.api.FeedManager;
-import ru.coutvv.vkliker.api.PostLiker;
-import ru.coutvv.vkliker.data.Comment;
+import ru.coutvv.vkliker.api.Liker;
+import ru.coutvv.vkliker.data.entity.Comment;
+import ru.coutvv.vkliker.data.repository.CommentRepository;
 
 /**
  * Фабрика для создавания всяких интересеных штук
@@ -55,8 +55,8 @@ public class Factory {
 		return new CommentRepository(actor, vk);
 	}
 	
-	public PostLiker createPostLiker() {
-		return new PostLiker(actor, vk);
+	public Liker createPostLiker() {
+		return new Liker(actor, vk);
 	}
 	
 	

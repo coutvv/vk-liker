@@ -1,19 +1,21 @@
 package ru.coutvv.vkliker.api;
 
+import java.util.Random;
+
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
-import ru.coutvv.vkliker.data.Comment;
-import ru.coutvv.vkliker.data.Post;
+import ru.coutvv.vkliker.data.entity.Comment;
+import ru.coutvv.vkliker.data.entity.Post;
 
-public class PostLiker {
+public class Liker {
 	
 	private final UserActor actor;
 	private final VkApiClient vk;
 	
-	public PostLiker(UserActor actor, VkApiClient vk) {
+	public Liker(UserActor actor, VkApiClient vk) {
 		this.actor = actor;
 		this.vk = vk;
 	}
@@ -40,13 +42,25 @@ public class PostLiker {
 	public void like(Comment comment, long idPostOwner) {
 		String script = "return API.likes.add({\"type\": \"comment\"," + " \"owner_id\": " + idPostOwner + ", "
 				+ "\"item_id\" : " + comment.getCommentId() + "});";
-		System.out.println(script);
 		try {
 			vk.execute().code(actor, script).execute();
 		} catch (ApiException e) {
 			e.printStackTrace();
 		} catch (ClientException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void likeAllComments(Post post, long timeout) {
+		for(Comment comment : post.getComments()) {
+			like(comment, post.getSourceId());
+			try { //waiting
+				long dtime = (new Random().nextBoolean() ? new Random().nextInt(250) : -new Random().nextInt(250));//warious time
+				System.out.println(timeout + dtime);
+				Thread.sleep((timeout + dtime));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

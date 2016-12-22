@@ -1,4 +1,4 @@
-package ru.coutvv.vkliker.data;
+package ru.coutvv.vkliker.data.entity;
 
 import java.util.Date;
 

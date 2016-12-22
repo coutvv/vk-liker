@@ -1,4 +1,4 @@
-package ru.coutvv.vkliker.api;
+package ru.coutvv.vkliker.data.repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,21 +13,17 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
-import ru.coutvv.vkliker.data.Post;
+import ru.coutvv.vkliker.data.entity.Post;
 
 /**
  * Отвечает за получение и парсинг данных
  * 
  * @author lomovtsevrs
  */
-public class FeedRepository {
+public class PostRepository extends Repository {
 	
-	private final UserActor actor;
-	private final VkApiClient vk;
-	
-	public FeedRepository(UserActor actor, VkApiClient vk) {
-		this.actor = actor;
-		this.vk = vk;
+	public PostRepository(UserActor actor, VkApiClient vk) {
+		super(actor, vk);
 	}
 
 	//час в миллисекундах
@@ -44,7 +40,6 @@ public class FeedRepository {
 		String script = configurateScript(time, null);
 		return parsePosts(runScript(script));
 	}
-
 	
 	/**
 	 * Получение последних постов в количестве count штук

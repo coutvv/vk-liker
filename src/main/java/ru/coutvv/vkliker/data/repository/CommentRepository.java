@@ -1,4 +1,4 @@
-package ru.coutvv.vkliker.api;
+package ru.coutvv.vkliker.data.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +11,18 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
-import ru.coutvv.vkliker.data.Comment;
-import ru.coutvv.vkliker.data.Post;
+import ru.coutvv.vkliker.data.entity.Comment;
+import ru.coutvv.vkliker.data.entity.Post;
 
 /**
  * Хранилище комментариев
  * 
  * @author lomovtsevrs
  */
-public class CommentRepository {
+public class CommentRepository extends Repository {
 	
-	UserActor actor;
-	VkApiClient vk;
-
 	public CommentRepository(UserActor actor, VkApiClient vk) {
-		this.actor = actor;
-		this.vk = vk;
+		super(actor, vk);
 	}
 	
 	public List<Comment> getComments(long ownerId, long postId) {
@@ -46,6 +42,7 @@ public class CommentRepository {
 		} catch (ApiException | ClientException e) {
 			e.printStackTrace();
 		}
+		System.out.println(result);
 		return result;
 	}
 	
