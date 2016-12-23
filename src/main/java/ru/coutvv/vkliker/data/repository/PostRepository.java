@@ -69,8 +69,9 @@ public class PostRepository extends Repository {
 			
 			boolean isLike = item.get("likes").getAsJsonObject().get("can_like").getAsInt() == 0; //залайкано?
 			String ownerName = (sourceId > 0) ? friends.get(sourceId) : groups.get(-sourceId);
-			if(sourceId != actor.getId() ) {//условие чтобы не лайкать свои комменты
-				result.add(new Post(ownerName, sourceId, postId, isLike)); 
+			long date = item.get("date").getAsLong();
+			if(sourceId != actor.getId() ) {//условие чтобы не лайкать свои посты
+				result.add(new Post(ownerName, sourceId, postId, isLike, date)); 
 			}
 
 		}

@@ -13,14 +13,16 @@ public class Post {
 	long ownerId;
 	String ownerName;
 	boolean isLiked;
+	private long date;
 
 	List<Comment> comments;
 
-	public Post(String ownerName, long source, long post, boolean isLiked) {
+	public Post(String ownerName, long source, long post, boolean isLiked, long date) {
 		this.ownerName = ownerName;
 		ownerId = source;
 		postId = post;
 		this.isLiked = isLiked;
+		this.date = date;
 	}
 
 
@@ -50,6 +52,11 @@ public class Post {
 	
 	@Override
 	public String toString() {
-		return "user: " + ownerName + "\t|\tid: " + postId;
+		return "user: " + ownerName + "\t|\tid: " + postId + " \n";
 	}
+
+	public long getDate() {
+		return date;
+	}
+
 }

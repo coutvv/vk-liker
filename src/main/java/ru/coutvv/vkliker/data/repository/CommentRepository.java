@@ -26,12 +26,21 @@ public class CommentRepository extends Repository {
 	}
 	
 	public List<Comment> getComments(Post post) {
-		return getComments(post.getOwnerId(), post.getPostId());
+		return getComments(post, 0);
 	}
 	
+	public List<Comment> getComments(Post post, int startFrom) {
+		return getComments(post.getOwnerId(), post.getPostId(), startFrom);
+	}
+	
+	
 	public List<Comment> getComments(long postOwnerId, long postId) {
+		return getComments(postOwnerId, postId, 0);
+	}
+	
+	public List<Comment> getComments(long postOwnerId, long postId, int start) {
 		List<Comment> result = new ArrayList<>();
-		int count = 0;
+		int count = start;
 
 		int maxCount = -1;
 		do {
@@ -58,7 +67,6 @@ public class CommentRepository extends Repository {
 			e.printStackTrace();
 			throw new IllegalArgumentException("Не удалось получить JSON-объект комментариев");
 		}
-		System.out.println(result);
 		return result;
 	}
 	

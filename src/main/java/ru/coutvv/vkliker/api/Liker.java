@@ -40,6 +40,7 @@ public class Liker {
 	 * @param idPostOwner -- ид обладателя поста!!!!111!
 	 */
 	public void like(Comment comment, long idPostOwner) {
+		if(comment.isLiked()) return;//не спамим! ^_^
 		String script = "return API.likes.add({\"type\": \"comment\"," + " \"owner_id\": " + idPostOwner + ", "
 				+ "\"item_id\" : " + comment.getCommentId() + "});";
 		try {
