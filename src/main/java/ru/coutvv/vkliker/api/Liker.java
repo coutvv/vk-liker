@@ -9,6 +9,7 @@ import com.vk.api.sdk.exceptions.ClientException;
 
 import ru.coutvv.vkliker.data.entity.Comment;
 import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.util.LagUtil;
 
 public class Liker {
 	
@@ -55,13 +56,7 @@ public class Liker {
 	public void likeAllComments(Post post, long timeout) {
 		for(Comment comment : post.getComments()) {
 			like(comment, post.getOwnerId());
-			try { //waiting
-				long dtime = (new Random().nextBoolean() ? new Random().nextInt(250) : -new Random().nextInt(250));//warious time
-				System.out.println(timeout + dtime);
-				Thread.sleep((timeout + dtime));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			LagUtil.lag();
 		}
 	}
 }
