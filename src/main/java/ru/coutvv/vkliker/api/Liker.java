@@ -21,7 +21,7 @@ public class Liker {
 	}
 
 	public void like(Post post) {
-		String script = "return API.likes.add({\"type\": \"post" + "\", \"owner_id\": " + post.getSourceId() + ", "
+		String script = "return API.likes.add({\"type\": \"post" + "\", \"owner_id\": " + post.getOwnerId() + ", "
 				+ "\"item_id\" : " + post.getPostId() + "});";
 		if(post.isLiked()) return;
 		try {
@@ -53,7 +53,7 @@ public class Liker {
 	
 	public void likeAllComments(Post post, long timeout) {
 		for(Comment comment : post.getComments()) {
-			like(comment, post.getSourceId());
+			like(comment, post.getOwnerId());
 			try { //waiting
 				long dtime = (new Random().nextBoolean() ? new Random().nextInt(250) : -new Random().nextInt(250));//warious time
 				System.out.println(timeout + dtime);

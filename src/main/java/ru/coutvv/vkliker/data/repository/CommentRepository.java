@@ -25,48 +25,49 @@ public class CommentRepository extends Repository {
 		super(actor, vk);
 	}
 	
-	public List<Comment> getComments(long ownerId, long postId) {
-		String script = "return API.wall.getComments({" +
-				"\"owner_id\" : " + ownerId + "," +
-				"\"post_id\" : " + postId + "," +
-				"});";
-		List<Comment> result = new ArrayList<Comment>();
-		try {
-			JsonElement json = vk.execute().code(actor, script).execute();
-			System.out.println(json);
-			JsonArray comments = json.getAsJsonObject().get("items").getAsJsonArray();
-			for(int i = 0; i < comments.size(); i++) {
-				JsonObject com = comments.get(i).getAsJsonObject();
-				result.add(new Comment(com, postId, ownerId));
-			}
-		} catch (ApiException | ClientException e) {
-			e.printStackTrace();
-		}
+	public List<Comment> getComments(Post post) {
+		return getComments(post.getOwnerId(), post.getPostId());
+	}
+	
+	public List<Comment> getComments(long postOwnerId, long postId) {
+		List<Comment> result = new ArrayList<>();
+		int count = 0;
+
+		int maxCount = -1;
+		do {
+			JsonElement data = getCommentsJson(postOwnerId, postId, 100, count);
+			if(maxCount == -1) maxCount = data.getAsJsonObject().get("count").getAsInt();
+			result.addAll(parseJson(data, postId, postOwnerId));
+			count += 100;
+		} while(count < maxCount);
 		return result;
 	}
 	
-	public List<Comment> getComments(Post post) {
-		return getComments(post.getSourceId(), post.getPostId());
-	}
-	
-	public List<Comment> getCommentsWithOffset(long ownerId, long postId, int count, int offset) {
+	private JsonElement getCommentsJson(long ownerId, long postId, int count, int offset) {
 		String script = "return API.wall.getComments({" +
 				"\"owner_id\" : " + ownerId + "," +
 				"\"post_id\" : " + postId + "," +
 				"\"offset\" : " + offset + "," +
 				"\"count\" : " + count + "," +
+				"\"need_likes\" : " + "1" + "," +
 				"});";
-		List<Comment> result = new ArrayList<Comment>();
+		JsonElement result = null;
 		try {
-			JsonElement json = vk.execute().code(actor, script).execute();
-			System.out.println(json);
-			JsonArray comments = json.getAsJsonObject().get("items").getAsJsonArray();
-			for(int i = 0; i < comments.size(); i++) {
-				JsonObject com = comments.get(i).getAsJsonObject();
-				result.add(new Comment(com, postId, ownerId));
-			}
+			result = vk.execute().code(actor, script).execute();
 		} catch (ApiException | ClientException e) {
 			e.printStackTrace();
+			throw new IllegalArgumentException("Не удалось получить JSON-объект комментариев");
+		}
+		System.out.println(result);
+		return result;
+	}
+	
+	private List<Comment> parseJson(JsonElement json, long postId, long ownerId) {
+		List<Comment> result = new ArrayList<>();
+		JsonArray comments = json.getAsJsonObject().get("items").getAsJsonArray();
+		for(int i = 0; i < comments.size(); i++) {
+			JsonObject com = comments.get(i).getAsJsonObject();
+			result.add(new Comment(com, postId, ownerId));
 		}
 		return result;
 	}

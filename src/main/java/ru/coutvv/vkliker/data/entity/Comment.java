@@ -20,6 +20,8 @@ public class Comment {
 	private final long date;
 	private final String text;
 	
+	private final boolean isLiked;
+	
 	public Comment(JsonObject json, long postId, long postOwnerId) {
 		this.ownerId = json.get("from_id").getAsLong();
 		this.commentId = json.get("id").getAsLong();
@@ -27,6 +29,7 @@ public class Comment {
 		this.text = json.get("text").getAsString();
 		this.postId = postId;
 		this.postOwnerId = postOwnerId;
+		this.isLiked = json.get("likes").getAsJsonObject().get("can_like").getAsInt() == 0;
 	}
 	
 	public String toString() {
@@ -59,5 +62,9 @@ public class Comment {
 
 	public long getPostOwnerId() {
 		return postOwnerId;
+	}
+
+	public boolean isLiked() {
+		return isLiked;
 	}
 }

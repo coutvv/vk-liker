@@ -10,7 +10,7 @@ import java.util.List;
 public class Post {
 	
 	long postId;
-	long sourceId;
+	long ownerId;
 	String ownerName;
 	boolean isLiked;
 
@@ -18,14 +18,14 @@ public class Post {
 
 	public Post(String ownerName, long source, long post, boolean isLiked) {
 		this.ownerName = ownerName;
-		sourceId = source;
+		ownerId = source;
 		postId = post;
 		this.isLiked = isLiked;
 	}
 
 
-	public long getSourceId() {
-		return sourceId;
+	public long getOwnerId() {
+		return ownerId;
 	}
 
 	public long getPostId() {

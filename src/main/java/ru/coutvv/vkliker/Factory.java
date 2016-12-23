@@ -2,7 +2,6 @@ package ru.coutvv.vkliker;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Properties;
 
 import com.google.gson.Gson;
@@ -13,9 +12,7 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 
 import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.api.Liker;
-import ru.coutvv.vkliker.data.entity.Comment;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
-import ru.coutvv.vkliker.data.repository.LikesRepository;
 
 /**
  * Фабрика для создавания всяких интересеных штук
@@ -58,10 +55,6 @@ public class Factory {
 	
 	public Liker createPostLiker() {
 		return new Liker(actor, vk);
-	}
-	
-	public LikesRepository createLikesRepository() {
-		return new LikesRepository(actor, vk);
 	}
 	
 }
