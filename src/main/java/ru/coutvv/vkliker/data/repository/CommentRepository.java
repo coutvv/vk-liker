@@ -13,6 +13,7 @@ import com.vk.api.sdk.exceptions.ClientException;
 
 import ru.coutvv.vkliker.data.entity.Comment;
 import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.util.LagUtil;
 
 /**
  * Хранилище комментариев
@@ -48,6 +49,7 @@ public class CommentRepository extends Repository {
 			if(maxCount == -1) maxCount = data.getAsJsonObject().get("count").getAsInt();
 			result.addAll(parseJson(data, postId, postOwnerId));
 			count += 100;
+			LagUtil.lag();//не палимся
 		} while(count < maxCount);
 		return result;
 	}
@@ -65,7 +67,7 @@ public class CommentRepository extends Repository {
 			result = vk.execute().code(actor, script).execute();
 		} catch (ApiException | ClientException e) {
 			e.printStackTrace();
-			throw new IllegalArgumentException("Не удалось получить JSON-объект комментариев");
+			throw new IllegalArgumentException("Не удалось получить JSON-объект комментариев" + script);
 		}
 		return result;
 	}
