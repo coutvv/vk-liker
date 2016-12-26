@@ -28,6 +28,7 @@ public class PostRepository extends Repository {
 
 	//час в миллисекундах
 	private static final long HOUR_AGO = 60*60*1000;
+	private static final long MINUTE_AGO = 60*1000;
 
 	
 	/**
@@ -36,7 +37,16 @@ public class PostRepository extends Repository {
 	 * @return
 	 */
 	public List<Post> getLastPosts(int hours) {
-		long time = (System.currentTimeMillis() - HOUR_AGO * hours)/1000;
+		return getLastPostsInMin(hours*60);
+	}
+	
+	/**
+	 * Получение постов за последние minutes минут
+	 * @param hours
+	 * @return
+	 */
+	public List<Post> getLastPostsInMin(int minutes) {
+		long time = (System.currentTimeMillis() - (MINUTE_AGO * minutes))/1000;
 		String script = configurateScript(time, null);
 		return parsePosts(runScript(script));
 	}

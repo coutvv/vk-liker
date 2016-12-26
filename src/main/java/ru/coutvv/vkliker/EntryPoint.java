@@ -1,6 +1,7 @@
 package ru.coutvv.vkliker;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import ru.coutvv.vkliker.api.FeedManager;
@@ -30,27 +31,17 @@ public class EntryPoint {
 			e.printStackTrace();
 		}
 		
-		if(args.length == 1 && args[0].equals("loop")) {
+		if(args.length >= 1 && Arrays.asList(args).contains("loop")) {
 			fm.scheduleLike(15);
-		} else if(args.length == 1 && args[0].equals("comments")) {
-			CommentRepository comRep = fac.createCommentRepository();
-			Liker lkr = fac.createPostLiker();
-			for(Post post : fac.createPostRepository().getLastPosts(2)) {
-				LagUtil.lag();
-				try {
-					List<Comment> coms = comRep.getComments(post);
-					for(Comment com : coms) {
-						lkr.like(com, post.getOwnerId());
-						LagUtil.lag();
-					}
-				} catch (Exception e) {
-					System.out.println("не получилось для поста: "+ post.getOwnerName());
-				}
+
+			if(Arrays.asList(args).contains("comment")) { //отслеживаем комменты
+				fm.commentWatching(15, 420);
 			}
-			
 		} else {
 			fm.likeAllLastHours(2);
 		}
+		
+
 	}
 	
 }

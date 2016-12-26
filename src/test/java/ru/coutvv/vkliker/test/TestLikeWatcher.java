@@ -2,7 +2,7 @@ package ru.coutvv.vkliker.test;
 
 import java.util.List;
 
-import ru.coutvv.vkliker.api.CommentMonitor;
+import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.data.entity.Post;
 
 public class TestLikeWatcher extends AbstractTest {

@@ -10,9 +10,9 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 
-import ru.coutvv.vkliker.api.CommentMonitor;
 import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.api.Liker;
+import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.data.repository.PostRepository;
 
