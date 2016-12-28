@@ -6,7 +6,7 @@ import java.util.List;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 
-import ru.coutvv.vkliker.api.monitor.CommentLikerListener;
+import ru.coutvv.vkliker.api.monitor.LikeCommentListener;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
@@ -44,9 +44,15 @@ public class FeedManager {
 	public void likeAllLastHours(int hours) {
 		ComplexFeedData cfd = feed.getFeedLastMinutes(hours * 60);
 		for(Item item : cfd.getItems()) {
-			if(item.getLikes().getCanLike() == 1) {
+			if(item.getLikes().getCanLike() == 1 && item.getSourceId() != (long)actor.getId()) {//тип не лайкать свои посты
 				liker.like(item);
-				System.out.println("liked post with source_id = " + cfd.getProfiles().get(item.getSourceId()));//TODO: как-то поменять
+				long ownerId = Math.abs(item.getSourceId());//тип у груп, чтоб тоже норм было
+				if(item.getSourceId() > 0) {
+					System.out.println("liked post by person: " + cfd.getProfiles().get(ownerId));//TODO: как-то поменять
+				} else {
+					System.out.println("liked post by community: " + cfd.getGroups().get(ownerId));//TODO: как-то поменять
+				}
+				
 				LagUtil.lag();
 			}
 		}
@@ -86,7 +92,7 @@ public class FeedManager {
 			@Override
 			public void run() {
 				CommentMonitor cm = new CommentMonitor(liker, coms, timeout, minutes);
-				CommentLikerListener cll = new CommentLikerListener(liker);
+				LikeCommentListener cll = new LikeCommentListener(liker);
 				cm.addListener(cll);
 				System.out.println("<<Watching for comments!>>");
 				for (;;) {

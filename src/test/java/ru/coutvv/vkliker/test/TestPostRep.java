@@ -7,7 +7,9 @@ import com.google.gson.JsonElement;
 
 import ru.coutvv.vkliker.Factory;
 import ru.coutvv.vkliker.data.entity.Item;
+import ru.coutvv.vkliker.data.entity.Profile;
 import ru.coutvv.vkliker.data.repository.PostRepository;
+import ru.coutvv.vkliker.data.repository.data.ComplexFeedData;
 
 public class TestPostRep {
 
@@ -21,5 +23,9 @@ public class TestPostRep {
 		JsonElement json = cr.getFeedItems(System.currentTimeMillis() -(60*60*1000));
 		List<Item> itm = cr.getLastPostsInMin(60*2);
 		System.out.println(itm);
+		
+		ComplexFeedData cfd = cr.getFeedLastMinutes(120);
+		Profile p = cfd.getProfiles().get(8213324l);
+		System.out.println(p);
 	}
 }

@@ -106,6 +106,6 @@ public class Group {
 	}
 
 	public String toString() {
-		return name + " " + id + "\n";
+		return name;
 	}
 }

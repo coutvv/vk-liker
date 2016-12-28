@@ -7,10 +7,10 @@ import ru.coutvv.vkliker.data.entity.Comment;
 import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.util.LagUtil;
 
-public class CommentLikerListener implements UpdateListener {
+public class LikeCommentListener implements UpdateListener {
 	
 	private Liker liker;
-	public CommentLikerListener(Liker liker){
+	public LikeCommentListener(Liker liker){
 		this.liker = liker;
 	}
 
@@ -22,7 +22,5 @@ public class CommentLikerListener implements UpdateListener {
 			LagUtil.lag();
 		}
 	}
-	
-	
 
 }
