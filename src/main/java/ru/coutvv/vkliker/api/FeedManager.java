@@ -11,6 +11,7 @@ import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.data.repository.PostRepository;
+import ru.coutvv.vkliker.data.repository.data.ComplexFeedData;
 import ru.coutvv.vkliker.util.LagUtil;
 
 /**
@@ -41,31 +42,16 @@ public class FeedManager {
 	 * @param hours
 	 */
 	public void likeAllLastHours(int hours) {
-		List<Item> posts = feed.getLastPosts(hours);
-		for (Item post : posts) {
-			if (post.getLikes().getCanLike() == 1) {
-				liker.like(post);
+		ComplexFeedData cfd = feed.getFeedLastMinutes(hours * 60);
+		for(Item item : cfd.getItems()) {
+			if(item.getLikes().getCanLike() == 1) {
+				liker.like(item);
+				System.out.println("liked post with source_id = " + cfd.getProfiles().get(item.getSourceId()));//TODO: как-то поменять
 				LagUtil.lag();
 			}
-
 		}
 	}
 
-	/**
-	 * Лайкаем все посты с комментариями
-	 * 
-	 * @param hours
-	 */
-//	public void likeAllLastHoursWithComments(int hours) {
-//		List<Item> posts = feed.getLastPosts(hours);
-//		likeAllLastHours(hours);
-//		for (Item post : posts) {
-//			List<Comment> comments = coms.getComments(post);
-//			post.setComments(comments);
-//			liker.likeAllComments(post, 500);
-//			LagUtil.lag();
-//		}
-//	}
 
 	/**
 	 * Периодически лайкать всю ленту

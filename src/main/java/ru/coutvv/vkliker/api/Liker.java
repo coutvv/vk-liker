@@ -24,11 +24,8 @@ public class Liker {
 		if(post.getLikes().getCanLike() == 0) return;
 		try {
 			vk.execute().code(actor, script).execute();
-			System.out.println("liked post with source_id = " + post.getSourceId());//TODO: как-то поменять
-		} catch (ApiException e) {
-			e.printStackTrace();
-		} catch (ClientException e) {
-			e.printStackTrace();
+		} catch (ApiException | ClientException e) {
+			System.out.println("Не смоглось залайкоть! D:]");
 		}
 	}
 	
@@ -50,10 +47,4 @@ public class Liker {
 		}
 	}
 	
-//	public void likeAllComments(Item post, long timeout) {
-//		for(Comment comment : post.getComments()) {
-//			like(comment, post.getOwnerId());
-//			LagUtil.lag();
-//		}
-//	}
 }

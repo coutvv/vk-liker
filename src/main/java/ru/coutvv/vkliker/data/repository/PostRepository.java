@@ -20,8 +20,12 @@ import ru.coutvv.vkliker.data.repository.data.ComplexFeedData;
  * 
  * @author lomovtsevrs
  */
-public class PostRepository extends Repository implements NewsFeedRepository {
-	
+public class PostRepository extends Repository implements ComplexFeedRepository {
+
+	public PostRepository(UserActor actor, VkApiClient vk) {
+		super(actor, vk);
+	}
+
 	@Override
 	public ComplexFeedData getFeedLastMinutes(int minutes) {
 		long time = System.currentTimeMillis()/1000 - 60 * minutes;//секунд с начала UNIX эпохи минус minutes минут
@@ -36,11 +40,6 @@ public class PostRepository extends Repository implements NewsFeedRepository {
 		JsonElement json = runScript(script);
 		return new ComplexFeedData(parseItems(json), parseProfiles(json), parseGroups(json));
 	}
-
-	public PostRepository(UserActor actor, VkApiClient vk) {
-		super(actor, vk);
-	}
-	
 	/**
 	 * Получение постов за последние hours часов
 	 * @param hours
