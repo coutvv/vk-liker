@@ -1,15 +1,12 @@
 package ru.coutvv.vkliker.api;
 
-import java.util.Random;
-
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
 import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
-import ru.coutvv.vkliker.util.LagUtil;
+import ru.coutvv.vkliker.data.entity.Item;
 
 public class Liker {
 	
@@ -21,13 +18,13 @@ public class Liker {
 		this.vk = vk;
 	}
 
-	public void like(Post post) {
-		String script = "return API.likes.add({\"type\": \"post" + "\", \"owner_id\": " + post.getOwnerId() + ", "
+	public void like(Item post) {
+		String script = "return API.likes.add({\"type\": \"post" + "\", \"owner_id\": " + post.getSourceId() + ", "
 				+ "\"item_id\" : " + post.getPostId() + "});";
-		if(post.isLiked()) return;
+		if(post.getLikes().getCanLike() == 0) return;
 		try {
 			vk.execute().code(actor, script).execute();
-			System.out.println("liked post of " + post.getOwnerName());
+			System.out.println("liked post with source_id = " + post.getSourceId());//TODO: как-то поменять
 		} catch (ApiException e) {
 			e.printStackTrace();
 		} catch (ClientException e) {
@@ -53,10 +50,10 @@ public class Liker {
 		}
 	}
 	
-	public void likeAllComments(Post post, long timeout) {
-		for(Comment comment : post.getComments()) {
-			like(comment, post.getOwnerId());
-			LagUtil.lag();
-		}
-	}
+//	public void likeAllComments(Item post, long timeout) {
+//		for(Comment comment : post.getComments()) {
+//			like(comment, post.getOwnerId());
+//			LagUtil.lag();
+//		}
+//	}
 }

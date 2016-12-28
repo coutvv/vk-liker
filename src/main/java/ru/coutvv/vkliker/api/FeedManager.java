@@ -8,8 +8,7 @@ import com.vk.api.sdk.client.actors.UserActor;
 
 import ru.coutvv.vkliker.api.monitor.CommentLikerListener;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
-import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.data.repository.PostRepository;
 import ru.coutvv.vkliker.util.LagUtil;
@@ -42,10 +41,9 @@ public class FeedManager {
 	 * @param hours
 	 */
 	public void likeAllLastHours(int hours) {
-		List<Post> posts = feed.getLastPosts(hours);
-		for (Post post : posts) {
-
-			if (!post.isLiked()) {
+		List<Item> posts = feed.getLastPosts(hours);
+		for (Item post : posts) {
+			if (post.getLikes().getCanLike() == 1) {
 				liker.like(post);
 				LagUtil.lag();
 			}
@@ -58,16 +56,16 @@ public class FeedManager {
 	 * 
 	 * @param hours
 	 */
-	public void likeAllLastHoursWithComments(int hours) {
-		List<Post> posts = feed.getLastPosts(hours);
-		likeAllLastHours(hours);
-		for (Post post : posts) {
-			List<Comment> comments = coms.getComments(post);
-			post.setComments(comments);
-			liker.likeAllComments(post, 500);
-			LagUtil.lag();
-		}
-	}
+//	public void likeAllLastHoursWithComments(int hours) {
+//		List<Item> posts = feed.getLastPosts(hours);
+//		likeAllLastHours(hours);
+//		for (Item post : posts) {
+//			List<Comment> comments = coms.getComments(post);
+//			post.setComments(comments);
+//			liker.likeAllComments(post, 500);
+//			LagUtil.lag();
+//		}
+//	}
 
 	/**
 	 * Периодически лайкать всю ленту
@@ -107,8 +105,8 @@ public class FeedManager {
 				System.out.println("<<Watching for comments!>>");
 				for (;;) {
 					System.out.println("[ Comment session ] this ended at " + new Date());
-					List<Post> posts = feed.getLastPostsInMin(minutes);
-					for(Post post : posts) {
+					List<Item> posts = feed.getLastPostsInMin(minutes);
+					for(Item post : posts) {
 						cm.addToWatch(post);
 					}
 					LagUtil.lag(minutes * 60 * 1000);

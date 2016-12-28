@@ -12,7 +12,7 @@ import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
 import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.util.LagUtil;
 
 /**
@@ -26,12 +26,12 @@ public class CommentRepository extends Repository {
 		super(actor, vk);
 	}
 	
-	public List<Comment> getComments(Post post) {
+	public List<Comment> getComments(Item post) {
 		return getComments(post, 0);
 	}
 	
-	public List<Comment> getComments(Post post, int startFrom) {
-		return getComments(post.getOwnerId(), post.getPostId(), startFrom);
+	public List<Comment> getComments(Item post, int startFrom) {
+		return getComments(post.getSourceId(), post.getPostId(), startFrom);
 	}
 	
 	

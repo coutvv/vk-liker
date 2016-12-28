@@ -2,14 +2,8 @@ package ru.coutvv.vkliker;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 import ru.coutvv.vkliker.api.FeedManager;
-import ru.coutvv.vkliker.api.Liker;
-import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
-import ru.coutvv.vkliker.data.repository.CommentRepository;
-import ru.coutvv.vkliker.util.LagUtil;
 
 /**
  * Входная точка
@@ -35,7 +29,7 @@ public class EntryPoint {
 			fm.scheduleLike(15);
 
 			if(Arrays.asList(args).contains("comment")) { //отслеживаем комменты
-				fm.commentWatching(15, 420);
+				fm.commentWatching(15, 420); //4 часа отслеживаем, каждые 15 минут лайкаем новые
 			}
 		} else {
 			fm.likeAllLastHours(2);

@@ -5,7 +5,6 @@ import java.util.List;
 
 import ru.coutvv.vkliker.Factory;
 import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 
 public class TestCommentRep {

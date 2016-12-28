@@ -3,9 +3,9 @@ package ru.coutvv.vkliker.api.monitor;
 import java.util.List;
 
 import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.entity.Item;
 
 public interface UpdateListener {
 
-	void update(Post post, List<Comment> comments);
+	void update(Item post, List<Comment> comments);
 }

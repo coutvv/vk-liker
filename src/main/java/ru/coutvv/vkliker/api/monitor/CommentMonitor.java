@@ -6,7 +6,7 @@ import java.util.Map;
 
 import ru.coutvv.vkliker.api.Liker;
 import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.util.LagUtil;
 
@@ -24,7 +24,7 @@ public class CommentMonitor extends Observer {
 	/**
 	 * Число -- количество комментариев, которые мы пролайкали
 	 */
-	private Map<Post, Integer> watchPosts;
+	private Map<Item, Integer> watchPosts;
 	
 	private CommentWatcher watcher;
 	
@@ -66,7 +66,7 @@ public class CommentMonitor extends Observer {
 		this.period = period;
 	}
 	
-	public void addToWatch(Post post) {
+	public void addToWatch(Item post) {
 		List<Comment> cms = commentRep.getComments(post);
 		watchPosts.put(post, cms.size());
 	}
@@ -83,13 +83,13 @@ public class CommentMonitor extends Observer {
 		public void run() {
 
 			for(;;) {
-				for(Post post : watchPosts.keySet()){
+				for(Item post : watchPosts.keySet()){
 
 					long endDate = post.getDate() + WATCH_TIME;
 					if(endDate > System.currentTimeMillis()/1000) {
 						List<Comment> cms = commentRep.getComments(post, watchPosts.get(post));
 						if(!cms.isEmpty()) {
-							System.out.println("Появились новые комментарии. Пост ∈ " + post.getOwnerName());
+							System.out.println("Появились новые комментарии. Пост ∈ " + post.getSourceId());
 							digest(post, cms);
 						}
 					} else {

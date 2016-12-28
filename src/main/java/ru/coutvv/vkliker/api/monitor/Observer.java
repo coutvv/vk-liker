@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.entity.Item;
 
 public abstract class Observer {
 
 	List<UpdateListener> listeners = new ArrayList<>();
-	protected void digest(Post post, List<Comment> comments) {
+	protected void digest(Item post, List<Comment> comments) {
 		for(UpdateListener ul : listeners){
 			ul.update(post, comments);
 		}

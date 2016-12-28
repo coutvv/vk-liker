@@ -3,8 +3,10 @@ package ru.coutvv.vkliker.test;
 import java.io.IOException;
 import java.util.List;
 
+import com.google.gson.JsonElement;
+
 import ru.coutvv.vkliker.Factory;
-import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.data.repository.PostRepository;
 
 public class TestPostRep {
@@ -16,7 +18,8 @@ public class TestPostRep {
 		Factory fac = new Factory(filename);
 		cr = fac.createPostRepository();
 		
-		List<Post> posts = cr.getLastPosts(1);
-		System.out.println(posts);
+		JsonElement json = cr.getFeedItems(System.currentTimeMillis() -(60*60*1000));
+		List<Item> itm = cr.getLastPostsInMin(60*2);
+		System.out.println(itm);
 	}
 }

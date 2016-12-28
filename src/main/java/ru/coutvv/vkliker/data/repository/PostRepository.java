@@ -1,42 +1,52 @@
 package ru.coutvv.vkliker.data.repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
-import ru.coutvv.vkliker.data.entity.Post;
+import ru.coutvv.vkliker.data.entity.Group;
+import ru.coutvv.vkliker.data.entity.Item;
+import ru.coutvv.vkliker.data.entity.Profile;
+import ru.coutvv.vkliker.data.repository.data.ComplexFeedData;
 
 /**
  * Отвечает за получение и парсинг данных
  * 
  * @author lomovtsevrs
  */
-public class PostRepository extends Repository {
+public class PostRepository extends Repository implements NewsFeedRepository {
 	
+	@Override
+	public ComplexFeedData getFeedLastMinutes(int minutes) {
+		long time = System.currentTimeMillis()/1000 - 60 * minutes;//секунд с начала UNIX эпохи минус minutes минут
+		String script = configurateScript(time, null);
+		JsonElement json = runScript(script);
+		return new ComplexFeedData(parseItems(json), parseProfiles(json), parseGroups(json));
+	}
+
+	@Override
+	public ComplexFeedData getFeedLastCount(int count) {
+		String script = configurateScript(null, count);
+		JsonElement json = runScript(script);
+		return new ComplexFeedData(parseItems(json), parseProfiles(json), parseGroups(json));
+	}
+
 	public PostRepository(UserActor actor, VkApiClient vk) {
 		super(actor, vk);
 	}
-
-	//час в миллисекундах
-	private static final long HOUR_AGO = 60*60*1000;
-	private static final long MINUTE_AGO = 60*1000;
-
 	
 	/**
 	 * Получение постов за последние hours часов
 	 * @param hours
 	 * @return
 	 */
-	public List<Post> getLastPosts(int hours) {
+	public List<Item> getLastPosts(int hours) {
 		return getLastPostsInMin(hours*60);
 	}
 	
@@ -45,10 +55,10 @@ public class PostRepository extends Repository {
 	 * @param hours
 	 * @return
 	 */
-	public List<Post> getLastPostsInMin(int minutes) {
-		long time = (System.currentTimeMillis() - (MINUTE_AGO * minutes))/1000;
+	public List<Item> getLastPostsInMin(int minutes) {
+		long time = System.currentTimeMillis()/1000 - (60 * minutes);
 		String script = configurateScript(time, null);
-		return parsePosts(runScript(script));
+		return parseItems(runScript(script));
 	}
 	
 	/**
@@ -56,73 +66,20 @@ public class PostRepository extends Repository {
 	 * @param count
 	 * @return
 	 */
-	public List<Post> getLastCountPosts(int count) {
+	public List<Item> getLastCountPosts(int count) {
 		String script = configurateScript(null, count);
-		return parsePosts(runScript(script));
+		return parseItems(runScript(script));
+	}
+	
+
+	public JsonElement getFeedItems(Long startTime) {
+		String script = "return API.newsfeed.get({" +
+				"\"start_time\" : \"" + startTime + "\",  " +
+				"\"return_banned\" : \"" + 1 +  "\",  " +
+				"});";
+		return runScript(script);
 	}
 
-	/**
-	 * Парсинг jsona  
-	 * @param response -- список постов 
-	 * @return
-	 */
-	private List<Post>  parsePosts(JsonElement response) {
-		List<Post> result  = new ArrayList<Post>(); 
-		JsonArray items = response.getAsJsonObject().get("items").getAsJsonArray();
-		
-		Map<Long, String> friends = parsePersons(response);
-		Map<Long, String> groups = parseGroups(response);
-		for(int i = 0; i < items.size(); i++ ) {
-			JsonObject item = items.get(i).getAsJsonObject();
-			long sourceId = item.get("source_id").getAsLong();
-			long postId = item.get("post_id").getAsInt();
-			
-			boolean isLike = item.get("likes").getAsJsonObject().get("can_like").getAsInt() == 0; //залайкано?
-			String ownerName = (sourceId > 0) ? friends.get(sourceId) : groups.get(-sourceId);
-			long date = item.get("date").getAsLong();
-			if(sourceId != actor.getId() ) {//условие чтобы не лайкать свои посты
-				result.add(new Post(ownerName, sourceId, postId, isLike, date)); 
-			}
-
-		}
-		return result;
-	}
-	
-	/**
-	 * Получаем мапу с пользователями
-	 * @param resp
-	 * @return
-	 */
-	private Map<Long, String> parsePersons(JsonElement resp) {
-		Map<Long, String> result = new HashMap<>();
-		JsonArray profiles = resp.getAsJsonObject().get("profiles").getAsJsonArray();
-		for(int i = 0; i < profiles.size(); i++) {
-			JsonObject profile = profiles.get(i).getAsJsonObject();
-			String name = profile.get("first_name").getAsString();
-			String lastname = profile.get("last_name").getAsString();
-			long id = profile.get("id").getAsLong();
-			result.put(id, lastname + " " + name);
-		}
-		return result;
-	}
-	
-	/**
-	 * Парсим и получаем мапу с группами
-	 * @param resp
-	 * @return
-	 */
-	private Map<Long, String> parseGroups(JsonElement resp) {
-		Map<Long, String> result = new HashMap<>();
-		JsonArray groups = resp.getAsJsonObject().get("groups").getAsJsonArray();
-		for(int i = 0; i < groups.size(); i++) {
-			JsonObject group = groups.get(i).getAsJsonObject();
-			String name = group.get("name").getAsString();
-			long id = group.get("id").getAsLong();
-			result.put(id, name);
-		}
-		return result;
-	}
-	
 	/**
 	 * Запускаем сценария получения json-объекта с постами
 	 * @param script
@@ -157,4 +114,37 @@ public class PostRepository extends Repository {
 		return script;
 	}
 
+	
+	/**
+	 * Парсинг jsona  
+	 * @param response -- список постов 
+	 * @return
+	 */
+	private List<Item>  parseItems(JsonElement response) {
+		JsonElement json = response.getAsJsonObject().get("items");
+		Item[] result = new Gson().fromJson(json, Item[].class);
+		 return Arrays.asList(result);
+	}
+	
+	/**
+	 * Парсинг профилей, владельцев постов
+	 * @param response
+	 * @return
+	 */
+	private List<Profile> parseProfiles(JsonElement response) {
+		JsonElement json = response.getAsJsonObject().get("profiles");
+		Profile[] result = new Gson().fromJson(json, Profile[].class);
+		 return Arrays.asList(result);
+	}
+	
+	/**
+	 * Парсинг групп, владельцев постов
+	 * @param response
+	 * @return
+	 */
+	private List<Group> parseGroups(JsonElement response) {
+		JsonElement json = response.getAsJsonObject().get("groups");
+		Group[] result = new Gson().fromJson(json, Group[].class);
+		return Arrays.asList(result);
+	}
 }
