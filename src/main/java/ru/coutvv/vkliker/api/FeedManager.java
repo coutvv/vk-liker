@@ -74,7 +74,11 @@ public class FeedManager {
 				for (;;) {
 					int hours = minutes / 60 + 1;// период за который получим
 													// новости
-					likeAllLastHours(hours);
+					try {
+						likeAllLastHours(hours);
+					} catch (Exception e) {
+						System.out.println("[ Can't reach some feauture ]");
+					}
 					System.out.println("[ waiting next session ] this ended at " + new Date());
 
 					LagUtil.lag(minutes * 60 * 1000);
