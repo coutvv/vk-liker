@@ -12,6 +12,7 @@ import ru.coutvv.vkliker.data.entity.Item;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.data.repository.PostRepository;
 import ru.coutvv.vkliker.data.repository.data.ComplexFeedData;
+import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.util.LagUtil;
 
 /**
@@ -48,9 +49,9 @@ public class FeedManager {
 				liker.like(item);
 				long ownerId = Math.abs(item.getSourceId());//тип у груп, чтоб тоже норм было
 				if(item.getSourceId() > 0) {
-					System.out.println("liked post by person: " + cfd.getProfiles().get(ownerId));//TODO: как-то поменять
+					Logger.log("liked post by person: " + cfd.getProfiles().get(ownerId));
 				} else {
-					System.out.println("liked post by community: " + cfd.getGroups().get(ownerId));//TODO: как-то поменять
+					Logger.log("liked post by community: " + cfd.getProfiles().get(ownerId));
 				}
 				
 				LagUtil.lag();
@@ -70,16 +71,16 @@ public class FeedManager {
 
 			@Override
 			public void run() {
-				System.out.println("[ lets like my feed forever ]");
+				Logger.log("[ lets like my feed forever ]");
 				for (;;) {
 					int hours = minutes / 60 + 1;// период за который получим
 													// новости
 					try {
 						likeAllLastHours(hours);
 					} catch (Exception e) {
-						System.out.println("[ Can't reach some feauture ]");
+						Logger.log("[ Can't reach some feauture ]");
 					}
-					System.out.println("[ waiting next session ] this ended at " + new Date());
+					Logger.log("[ waiting next session ] this ended at " + new Date());
 
 					LagUtil.lag(minutes * 60 * 1000);
 				}

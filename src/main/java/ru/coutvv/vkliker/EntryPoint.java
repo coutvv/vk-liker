@@ -3,7 +3,12 @@ package ru.coutvv.vkliker;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.telegram.telegrambots.TelegramApiException;
+import org.telegram.telegrambots.TelegramBotsApi;
+
 import ru.coutvv.vkliker.api.FeedManager;
+import ru.coutvv.vkliker.notify.Logger;
+import ru.coutvv.vkliker.notify.TelegramNotifierBot;
 
 /**
  * Входная точка
@@ -15,15 +20,17 @@ public class EntryPoint {
 	final static String FILENAME = "app.properties";
 	
 	static FeedManager fm;
+	static Factory fac;
 
 	public static void main(String[] args) {
-		Factory fac = null;
 		try {
 			fac = new Factory(FILENAME);
 			fm = fac.createFeedManager();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		initLogSystem();
 		
 		if(args.length >= 1 && Arrays.asList(args).contains("loop")) {
 			fm.scheduleLike(15);
@@ -32,10 +39,20 @@ public class EntryPoint {
 				fm.commentWatching(15, 420); //4 часа отслеживаем, каждые 15 минут лайкаем новые
 			}
 		} else {
-			fm.likeAllLastHours(2);
+			fm.likeAllLastHours(12);
 		}
 		
 
 	}
 	
+	private static void initLogSystem() {
+		TelegramNotifierBot bot = fac.createNotifier();
+		TelegramBotsApi api = new TelegramBotsApi();
+		try {
+			api.registerBot(bot);
+		} catch (TelegramApiException e) {
+			throw new IllegalArgumentException("telegram");
+		}
+		Logger.init(bot);
+	}
 }
