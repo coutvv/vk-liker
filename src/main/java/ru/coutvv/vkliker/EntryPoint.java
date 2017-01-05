@@ -39,7 +39,8 @@ public class EntryPoint {
 				fm.commentWatching(15, 420); //4 часа отслеживаем, каждые 15 минут лайкаем новые
 			}
 		} else {
-			fm.likeAllLastHours(12);
+			fm.likeAllLastHours(24);
+			System.exit(0);//вырубаемси
 		}
 		
 

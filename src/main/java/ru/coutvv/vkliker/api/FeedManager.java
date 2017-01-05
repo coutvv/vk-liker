@@ -51,7 +51,7 @@ public class FeedManager {
 				if(item.getSourceId() > 0) {
 					Logger.log("liked post by person: " + cfd.getProfiles().get(ownerId));
 				} else {
-					Logger.log("liked post by community: " + cfd.getProfiles().get(ownerId));
+					Logger.log("liked post by community: " + cfd.getGroups().get(ownerId));
 				}
 				
 				LagUtil.lag();
