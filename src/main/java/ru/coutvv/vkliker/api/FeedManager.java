@@ -78,7 +78,7 @@ public class FeedManager {
 					try {
 						likeAllLastHours(hours);
 					} catch (Exception e) {
-						Logger.log("[ Can't reach some feauture ]");
+						Logger.log("[ Can't reach some feauture ]" + e.getMessage());
 					}
 					Logger.log("[ waiting next session ] this ended at " + new Date());
 
