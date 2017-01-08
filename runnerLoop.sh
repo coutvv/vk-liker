@@ -1,5 +1,5 @@
 #!/bin/bash
-FILE="target/vk-liker-jar-with-dependencies.jar"
+FILE="build/libs/vk-liker.jar"
 
 if [ ! -f $FILE]; then
     echo "Oops! Executing  $FILE not found!"
