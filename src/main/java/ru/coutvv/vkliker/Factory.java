@@ -17,7 +17,9 @@ import ru.coutvv.vkliker.api.Liker;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.data.repository.PostRepository;
+import ru.coutvv.vkliker.notify.TelegramBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
+import ru.coutvv.vkliker.notify.bot.TelegramNotifyOnDemandBot;
 
 /**
  * Фабрика для создавания всяких интересеных штук
@@ -77,7 +79,7 @@ public class Factory {
 		return new CommentMonitor(createPostLiker(), createCommentRepository()); 
 	}
 	
-	public TelegramNotifierBot createNotifier() {
+	public TelegramBot createNotifier() {
 		try {
 			TelegramNotifierBot teleBot = new TelegramNotifierBot(teleToken, chatId);
 			return teleBot;
@@ -85,6 +87,18 @@ public class Factory {
 			e.printStackTrace();
 		}
 		throw new IllegalArgumentException("can't create notifier");
+	}
+
+	public TelegramBot createNotCozyNotifier() {
+
+		try {
+			TelegramNotifyOnDemandBot teleBot = new TelegramNotifyOnDemandBot(teleToken, chatId);
+			return teleBot;
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
+		throw new IllegalArgumentException("can't create notifier");
+
 	}
 	
 }

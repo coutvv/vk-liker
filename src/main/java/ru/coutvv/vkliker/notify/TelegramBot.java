@@ -5,10 +5,9 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
-public class TelegramBot extends TelegramLongPollingBot {
+public abstract class TelegramBot extends TelegramLongPollingBot implements Notifier  {
 	
-private String token;
-	
+	private String token;
 	private final String NAME = "vkliker";
 	private final String chatId;
 	private final ResponseStrategy resp;

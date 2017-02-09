@@ -5,7 +5,7 @@ import org.telegram.telegrambots.TelegramApiException;
 import ru.coutvv.vkliker.notify.Notifier;
 import ru.coutvv.vkliker.notify.TelegramBot;
 
-public class TelegramNotifierBot extends TelegramBot implements Notifier {
+public class TelegramNotifierBot extends TelegramBot {
 
 	public TelegramNotifierBot(String token, String chatId) throws TelegramApiException {
 		super(token, chatId, (update, bot) -> {
