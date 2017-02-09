@@ -6,7 +6,7 @@ import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 
 import ru.coutvv.vkliker.Factory;
-import ru.coutvv.vkliker.notify.TelegramNotifierBot;
+import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 
 public class TestTelegram {
 	

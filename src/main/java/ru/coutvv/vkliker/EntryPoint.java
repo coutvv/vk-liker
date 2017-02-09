@@ -8,7 +8,7 @@ import org.telegram.telegrambots.TelegramBotsApi;
 
 import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.notify.Logger;
-import ru.coutvv.vkliker.notify.TelegramNotifierBot;
+import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 
 /**
  * Входная точка

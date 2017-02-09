@@ -5,16 +5,18 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
-public class TelegramNotifierBot extends TelegramLongPollingBot implements Notifier {
-
-	private String token;
+public class TelegramBot extends TelegramLongPollingBot {
+	
+private String token;
 	
 	private final String NAME = "vkliker";
 	private final String chatId;
+	private final ResponseStrategy resp;
 	
-	public TelegramNotifierBot(String token, String chatId) throws TelegramApiException {
+	public TelegramBot(String token, String chatId, ResponseStrategy response) throws TelegramApiException {
 		this.token = token;
 		this.chatId = chatId;
+		this.resp = response;
 	}
 	
 	@Override
@@ -24,17 +26,16 @@ public class TelegramNotifierBot extends TelegramLongPollingBot implements Notif
 
 	@Override
 	public void onUpdateReceived(Update update) {
-		String id = update.getMessage().getChatId().toString();
-		String answer = "This chat ID:  " + id;
-		sending(id, answer);
+		resp.onUpdate(update, this);
 	}
 
 	@Override
-	public void print(String msg) {
-		sending(chatId, msg);
+	public String getBotToken() {
+		return token;
 	}
 	
-	public void sending(String chatId, String text) {
+
+	public void sending(String text) {
 		SendMessage message = new SendMessage();
 		message.setText(text);
 		message.setChatId(chatId);
@@ -43,11 +44,6 @@ public class TelegramNotifierBot extends TelegramLongPollingBot implements Notif
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public String getBotToken() {
-		return token;
 	}
 
 }

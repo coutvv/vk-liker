@@ -17,7 +17,7 @@ import ru.coutvv.vkliker.api.Liker;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.data.repository.CommentRepository;
 import ru.coutvv.vkliker.data.repository.PostRepository;
-import ru.coutvv.vkliker.notify.TelegramNotifierBot;
+import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 
 /**
  * Фабрика для создавания всяких интересеных штук
