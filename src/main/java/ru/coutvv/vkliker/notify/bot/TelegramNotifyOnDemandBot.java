@@ -9,23 +9,27 @@ import ru.coutvv.vkliker.notify.TelegramBot;
 
 public class TelegramNotifyOnDemandBot extends TelegramBot {
 
+	private static int count = 0;
+	private final int MAX_LIST_MSG_SIZE = 10;
 	private final static List<String> messages = new LinkedList<>();
 
 	public TelegramNotifyOnDemandBot(String token, String chatId) throws TelegramApiException {
 		super(token, chatId, (update, bot) -> {
-			if(messages.size() == 0) bot.sending("I am alive but msgs is empty now");
-			else bot.sending("I have some more msgs: " + messages.size());
+			bot.sending("I like for you " + count + " posts. \n And these last " +
+						messages.size() + " posts:");
+
 			for(String msg : messages) {
 				bot.sending(msg);
 			}
-			for(int i = 0; i < messages.size(); i++)
-				messages.remove(i);
 		});
 	}
 
 	@Override
 	public void print(String msg) {
+		if(messages.size() >= MAX_LIST_MSG_SIZE)
+			messages.remove(0);
 		messages.add(msg);
+		count++;
 	}
 
 	
