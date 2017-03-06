@@ -48,7 +48,9 @@ public class EntryPoint {
 	}
 	
 	private static void initLogSystem() {
-		TelegramBot bot = fac.createNotCozyNotifier();
+//		TelegramBot bot = fac.createNotCozyNotifier();
+		TelegramBot bot = fac.createStaticalNotifier();
+
 
 		TelegramBotsApi api = new TelegramBotsApi();
 		try {

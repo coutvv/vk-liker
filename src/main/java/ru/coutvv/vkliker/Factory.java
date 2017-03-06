@@ -20,6 +20,7 @@ import ru.coutvv.vkliker.data.repository.PostRepository;
 import ru.coutvv.vkliker.notify.TelegramBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifyOnDemandBot;
+import ru.coutvv.vkliker.notify.bot.TelegramStatisticalBot;
 
 /**
  * Фабрика для создавания всяких интересеных штук
@@ -99,6 +100,16 @@ public class Factory {
 		}
 		throw new IllegalArgumentException("can't create notifier");
 
+	}
+	public TelegramBot createStaticalNotifier() {
+
+		try {
+			TelegramStatisticalBot teleBot = new TelegramStatisticalBot(teleToken, chatId);
+			return teleBot;
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException("can't create notifier");
+		}
 	}
 	
 }

@@ -3,6 +3,7 @@ package ru.coutvv.vkliker.notify;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 public abstract class TelegramBot extends TelegramLongPollingBot implements Notifier  {
@@ -38,6 +39,18 @@ public abstract class TelegramBot extends TelegramLongPollingBot implements Noti
 		SendMessage message = new SendMessage();
 		message.setText(text);
 		message.setChatId(chatId);
+		try {
+			sendMessage(message);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sending(String text, ReplyKeyboard keyboard) {
+		SendMessage message = new SendMessage();
+		message.setText(text);
+		message.setChatId(chatId);
+		message.setReplyMarkup(keyboard);
 		try {
 			sendMessage(message);
 		} catch (TelegramApiException e) {

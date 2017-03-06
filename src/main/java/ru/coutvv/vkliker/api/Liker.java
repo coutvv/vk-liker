@@ -7,6 +7,8 @@ import com.vk.api.sdk.exceptions.ClientException;
 
 import ru.coutvv.vkliker.data.entity.Comment;
 import ru.coutvv.vkliker.data.entity.Item;
+import ru.coutvv.vkliker.orm.LikePostRepository;
+import ru.coutvv.vkliker.orm.entity.LikePost;
 
 public class Liker {
 	
@@ -18,6 +20,7 @@ public class Liker {
 		this.vk = vk;
 	}
 
+	private LikePostRepository lpr = new LikePostRepository();
 	public void like(Item post) {
 		String script = "return API.likes.add({\"type\": \"post" + "\", \"owner_id\": " + post.getSourceId() + ", "
 				+ "\"item_id\" : " + post.getPostId() + "});";
@@ -27,6 +30,12 @@ public class Liker {
 		} catch (ApiException | ClientException e) {
 			System.out.println("Не смоглось залайкоть! D:]");
 		}
+	}
+
+	public void likeAndSave(Item post, String author) {
+		like(post);
+		LikePost lp = new LikePost(author);
+		lpr.saveLikePost(lp);
 	}
 	
 	/**
