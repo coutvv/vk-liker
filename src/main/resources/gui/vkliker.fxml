@@ -54,18 +54,18 @@
                 <TextArea fx:id="log" layoutX="18.0" layoutY="23.0" prefHeight="205.0" prefWidth="270.0" />
 
                 <Button fx:id="start" onAction="#start" layoutX="16.0" layoutY="238.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" text="Start" />
-                <Button fx:id="stop" onAction="#stop" layoutX="156.0" layoutY="238.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" text="Stop" />
+                <Button fx:id="stop" disable="true" onAction="#stop" layoutX="156.0" layoutY="238.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="133.0" text="Stop" />
                 <SplitPane dividerPositions="0.5" layoutX="18.0" layoutY="275.0" orientation="VERTICAL" prefHeight="85.0" prefWidth="270.0">
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <Button layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="/all" />
-                                <Button layoutX="142.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="/day" />
+                                <Button onAction="#all" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="/all" />
+                                <Button onAction="#day" layoutX="142.0" layoutY="7.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="/day" />
                             </children>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <TextArea layoutX="41.0" layoutY="-76.0" prefHeight="38.0" prefWidth="268.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                <TextArea fx:id="statistic" layoutX="41.0" layoutY="-76.0" prefHeight="38.0" prefWidth="268.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                             </children>
                         </AnchorPane>
                     </items>

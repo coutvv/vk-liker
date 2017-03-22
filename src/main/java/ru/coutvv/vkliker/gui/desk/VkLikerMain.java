@@ -3,6 +3,7 @@ package ru.coutvv.vkliker.gui.desk;/**
  */
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -26,7 +27,10 @@ public class VkLikerMain extends Application {
         primaryStage.setTitle("VkLiker");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> Platform.exit());
     }
+
+
 
 
 

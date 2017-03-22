@@ -7,6 +7,7 @@ import ru.coutvv.vkliker.Factory;
 import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.notify.Notifier;
+import ru.coutvv.vkliker.orm.LikePostRepository;
 import ru.coutvv.vkliker.util.LagUtil;
 
 import java.io.IOException;
@@ -21,6 +22,11 @@ public class VKLikerGuiController {
     public Button stop;
 
     public Notifier notifier = new GuiNotifier();
+    public TextArea statistic;
+
+    public VKLikerGuiController() {
+
+    }
 
     public void start(ActionEvent actionEvent) {
         log.clear();
@@ -60,6 +66,14 @@ public class VKLikerGuiController {
         }
     }
 
+    public void day(ActionEvent actionEvent) {
+        statistic.setText("Per day: " + lpp.getCountLikePerDay());
+    }
+
+    public void all(ActionEvent actionEvent) {
+        statistic.setText("Per all time: " + lpp.getCountLike());
+    }
+
     private class GuiNotifier implements Notifier {
         @Override
         public void print(String msg) {
@@ -67,4 +81,7 @@ public class VKLikerGuiController {
             log.setText(log.getText() + "\n" + msg);
         }
     }
+
+
+    static final LikePostRepository lpp = new LikePostRepository();
 }
