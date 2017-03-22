@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
@@ -84,26 +87,27 @@ public class FeedManager {
 	 * @param minutes
 	 *            -- период в минутах
 	 */
-	public void scheduleLike(int minutes) {
-		new Thread(new Runnable() {
+	public ExecutorService scheduleLike(int minutes) {
 
-			@Override
-			public void run() {
-				Logger.log("[ lets like my feed forever ]");
-				for (;;) {
-					int hours = minutes / 60 + 1;// период за который получим
-													// новости
-					try {
-						likeAllLastHours(hours);
-					} catch (Exception e) {
-						Logger.log("[ Can't reach some feauture ]" + e.getMessage());
-					}
-					Logger.log("[ waiting next session ] this ended at " + new Date());
-
-					LagUtil.lag(minutes * 60 * 1000);
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		Runnable task = () -> {
+			Logger.log("[ lets like my feed forever ]");
+			for (;;) {
+				int hours = minutes / 60 + 1;// период за который получим
+				// новости
+				try {
+					likeAllLastHours(hours);
+				} catch (Exception e) {
+					Logger.log("[ Can't reach some feauture ]" + e.getMessage());
 				}
+				Logger.log("[ waiting next session ] this ended at " + new Date());
+
+				LagUtil.lag(minutes * 60 * 1000);
 			}
-		}).start();
+		};
+		exec.execute(task);
+
+		return exec;
 	}
 
 	/**
