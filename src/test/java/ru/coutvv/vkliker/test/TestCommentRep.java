@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import ru.coutvv.vkliker.Factory;
-import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.repository.CommentRepository;
+import ru.coutvv.vkliker.api.entity.Comment;
+import ru.coutvv.vkliker.api.repository.CommentRepository;
 
 public class TestCommentRep {
 

@@ -6,10 +6,10 @@ import java.util.List;
 import com.google.gson.JsonElement;
 
 import ru.coutvv.vkliker.Factory;
-import ru.coutvv.vkliker.data.entity.Item;
-import ru.coutvv.vkliker.data.entity.Profile;
-import ru.coutvv.vkliker.data.repository.PostRepository;
-import ru.coutvv.vkliker.data.repository.data.ComplexFeedData;
+import ru.coutvv.vkliker.api.entity.Item;
+import ru.coutvv.vkliker.api.entity.Profile;
+import ru.coutvv.vkliker.api.repository.PostRepository;
+import ru.coutvv.vkliker.api.entity.ComplexFeedData;
 
 public class TestPostRep {
 

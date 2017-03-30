@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -13,12 +12,12 @@ import com.vk.api.sdk.client.actors.UserActor;
 
 import ru.coutvv.vkliker.api.monitor.LikeCommentListener;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
-import ru.coutvv.vkliker.data.entity.Group;
-import ru.coutvv.vkliker.data.entity.Item;
-import ru.coutvv.vkliker.data.entity.Profile;
-import ru.coutvv.vkliker.data.repository.CommentRepository;
-import ru.coutvv.vkliker.data.repository.PostRepository;
-import ru.coutvv.vkliker.data.repository.data.ComplexFeedData;
+import ru.coutvv.vkliker.api.entity.Group;
+import ru.coutvv.vkliker.api.entity.Item;
+import ru.coutvv.vkliker.api.entity.Profile;
+import ru.coutvv.vkliker.api.repository.CommentRepository;
+import ru.coutvv.vkliker.api.repository.PostRepository;
+import ru.coutvv.vkliker.api.entity.ComplexFeedData;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.util.LagUtil;
 

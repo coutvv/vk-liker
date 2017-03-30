@@ -3,8 +3,8 @@ package ru.coutvv.vkliker.api.monitor;
 import java.util.List;
 
 import ru.coutvv.vkliker.api.Liker;
-import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Item;
+import ru.coutvv.vkliker.api.entity.Comment;
+import ru.coutvv.vkliker.api.entity.Item;
 import ru.coutvv.vkliker.util.LagUtil;
 
 public class LikeCommentListener implements UpdateListener {

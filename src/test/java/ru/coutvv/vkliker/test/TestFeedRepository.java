@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.google.gson.JsonElement;
 
 import ru.coutvv.vkliker.Factory;
-import ru.coutvv.vkliker.data.repository.PostRepository;
+import ru.coutvv.vkliker.api.repository.PostRepository;
 
 public class TestFeedRepository {
 

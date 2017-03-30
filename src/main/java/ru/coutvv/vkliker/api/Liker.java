@@ -5,8 +5,8 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
-import ru.coutvv.vkliker.data.entity.Comment;
-import ru.coutvv.vkliker.data.entity.Item;
+import ru.coutvv.vkliker.api.entity.Comment;
+import ru.coutvv.vkliker.api.entity.Item;
 import ru.coutvv.vkliker.orm.LikePostRepository;
 import ru.coutvv.vkliker.orm.entity.LikePost;
 
