@@ -10,14 +10,16 @@ import java.util.concurrent.Executors;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import ru.coutvv.vkliker.api.monitor.LikeCommentListener;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.api.entity.Group;
 import ru.coutvv.vkliker.api.entity.Item;
 import ru.coutvv.vkliker.api.entity.Profile;
-import ru.coutvv.vkliker.api.repository.CommentRepository;
-import ru.coutvv.vkliker.api.repository.PostRepository;
-import ru.coutvv.vkliker.api.entity.ComplexFeedData;
+import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
+import ru.coutvv.vkliker.api.repository.PostRepositoryImpl;
+import ru.coutvv.vkliker.api.repository.ComplexFeedData;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.util.LagUtil;
 
@@ -26,43 +28,40 @@ import ru.coutvv.vkliker.util.LagUtil;
  * 
  * @author lomovtsevrs
  */
+@Deprecated
 public class FeedManager {
+
 	private final UserActor actor;
 	private final VkApiClient vk;
-
-	private final PostRepository feed;
 	private final Liker liker;
-	private final CommentRepository coms;
+
+	private final PostRepositoryImpl feed;
+	private final CommentRepositoryImpl coms;
+
+	private Map<Long, String> names;
 
 	public FeedManager(UserActor actor, VkApiClient vkClient) {
 		this.actor = actor;
 		this.vk = vkClient;
-		feed = new PostRepository(actor, vk);
+		feed = new PostRepositoryImpl(actor, vk);
 		liker = new Liker(actor, vk);
-		coms = new CommentRepository(actor, vk);
-
+		coms = new CommentRepositoryImpl(actor, vk);
 	}
 
-	private Map<Long, String> names;
-
-	private void createNames(Map<Long, Profile> profiles, Map<Long, Group> groups) {
-		names = new HashMap<>();
-		for(Map.Entry<Long, Profile> e : profiles.entrySet()) {
-			names.put(e.getKey(), e.getValue().getFirstName() + " " + e.getValue().getLastName());
-		}
-
-		for(Map.Entry<Long, Group> e : groups.entrySet()) {
-			names.put(e.getKey(), e.getValue().getName());
-		}
-
-	}
 	/**
 	 * Залайкать все новости в ленте за последние hours часов
-	 * 
+	 *
 	 * @param hours
 	 */
 	public void likeAllLastHours(int hours) {
-		ComplexFeedData cfd = feed.getFeedLastMinutes(hours * 60);
+		ComplexFeedData cfd = null;
+		try {
+			cfd = new ComplexFeedData(feed.getAtLast(hours * 60));
+		} catch (ClientException e) {
+			e.printStackTrace();
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
 		createNames(cfd.getProfiles(), cfd.getGroups());
 		for(Item item : cfd.getItems()) {
 			if(item.getLikes().getCanLike() == 1 && item.getSourceId() != (long)actor.getId()) {//тип не лайкать свои посты
@@ -73,7 +72,7 @@ public class FeedManager {
 				} else {
 					Logger.log("liked post by community: " + cfd.getGroups().get(ownerId));
 				}
-				
+
 				LagUtil.lag();
 			}
 		}
@@ -82,7 +81,7 @@ public class FeedManager {
 
 	/**
 	 * Периодически лайкать всю ленту
-	 * 
+	 *
 	 * @param minutes
 	 *            -- период в минутах
 	 */
@@ -114,7 +113,7 @@ public class FeedManager {
 	 */
 	public void commentWatching(int minutes, long timeout) {
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				CommentMonitor cm = new CommentMonitor(liker, coms, timeout, minutes);
@@ -123,7 +122,14 @@ public class FeedManager {
 				System.out.println("<<Watching for comments!>>");
 				for (;;) {
 					System.out.println("[ Comment session ] this ended at " + new Date());
-					List<Item> posts = feed.getLastPostsInMin(minutes);
+					List<Item> posts = null;
+					try {
+						posts = ComplexFeedData.parseItems(feed.getAtLast(minutes));
+					} catch (ClientException e) {
+						e.printStackTrace();
+					} catch (ApiException e) {
+						e.printStackTrace();
+					}
 					for(Item post : posts) {
 						cm.addToWatch(post);
 					}
@@ -132,5 +138,19 @@ public class FeedManager {
 			}
 		}).start();
 	}
+
+
+	private void createNames(Map<Long, Profile> profiles, Map<Long, Group> groups) {
+		names = new HashMap<>();
+		for(Map.Entry<Long, Profile> e : profiles.entrySet()) {
+			names.put(e.getKey(), e.getValue().getFirstName() + " " + e.getValue().getLastName());
+		}
+
+		for(Map.Entry<Long, Group> e : groups.entrySet()) {
+			names.put(e.getKey(), e.getValue().getName());
+		}
+
+	}
+
 
 }

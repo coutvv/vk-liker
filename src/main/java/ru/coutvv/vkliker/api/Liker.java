@@ -14,13 +14,14 @@ public class Liker {
 	
 	private final UserActor actor;
 	private final VkApiClient vk;
+	private LikePostRepository lpr = new LikePostRepository();
 	
 	public Liker(UserActor actor, VkApiClient vk) {
 		this.actor = actor;
 		this.vk = vk;
 	}
 
-	private LikePostRepository lpr = new LikePostRepository();
+
 	public void like(Item post) {
 		String script = "return API.likes.add({\"type\": \"post" + "\", \"owner_id\": " + post.getSourceId() + ", "
 				+ "\"item_id\" : " + post.getPostId() + "});";

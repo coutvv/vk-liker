@@ -7,7 +7,7 @@ import java.util.Map;
 import ru.coutvv.vkliker.api.Liker;
 import ru.coutvv.vkliker.api.entity.Comment;
 import ru.coutvv.vkliker.api.entity.Item;
-import ru.coutvv.vkliker.api.repository.CommentRepository;
+import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
 import ru.coutvv.vkliker.util.LagUtil;
 
 /**
@@ -19,7 +19,7 @@ public class CommentMonitor extends Observer {
 
 	private final Liker liker;
 	
-	private final CommentRepository commentRep;
+	private final CommentRepositoryImpl commentRep;
 	
 	/**
 	 * Число -- количество комментариев, которые мы пролайкали
@@ -37,7 +37,7 @@ public class CommentMonitor extends Observer {
 	 */
 	private long timeout = 1 * 60 * 60; //1 час по умолчанию
 	
-	public CommentMonitor(Liker liker, CommentRepository commentRep) {
+	public CommentMonitor(Liker liker, CommentRepositoryImpl commentRep) {
 		this.liker = liker;
 		this.commentRep = commentRep;
 		watchPosts = new HashMap<>();
@@ -52,7 +52,7 @@ public class CommentMonitor extends Observer {
 	 * @param timeout в минутах 
 	 * @param period в минутах
 	 */
-	public CommentMonitor(Liker liker, CommentRepository commentRep, long timeout, long period) {
+	public CommentMonitor(Liker liker, CommentRepositoryImpl commentRep, long timeout, long period) {
 		this(liker, commentRep);
 		this.timeout = timeout * 60;
 		this.period = period * 60;

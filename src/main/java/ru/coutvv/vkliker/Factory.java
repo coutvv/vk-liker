@@ -15,8 +15,8 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.api.Liker;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
-import ru.coutvv.vkliker.api.repository.CommentRepository;
-import ru.coutvv.vkliker.api.repository.PostRepository;
+import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
+import ru.coutvv.vkliker.api.repository.PostRepositoryImpl;
 import ru.coutvv.vkliker.notify.TelegramBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifyOnDemandBot;
@@ -64,12 +64,12 @@ public class Factory {
 		return new FeedManager(actor, vk);
 	}
 	
-	public CommentRepository createCommentRepository() {
-		return new CommentRepository(actor, vk);
+	public CommentRepositoryImpl createCommentRepository() {
+		return new CommentRepositoryImpl(actor, vk);
 	}
 	
-	public PostRepository createPostRepository() {
-		return new PostRepository(actor, vk);
+	public PostRepositoryImpl createPostRepository() {
+		return new PostRepositoryImpl(actor, vk);
 	}
 	
 	public Liker createPostLiker() {
