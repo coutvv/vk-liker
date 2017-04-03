@@ -5,7 +5,7 @@ import java.util.List;
 
 import ru.coutvv.vkliker.Factory;
 import ru.coutvv.vkliker.api.entity.Comment;
-import ru.coutvv.vkliker.api.repository.CommentRepository;
+import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
 
 public class TestCommentRep {
 
@@ -13,7 +13,7 @@ public class TestCommentRep {
 		
 		String filename = "app.properties";
 		Factory fac = new Factory(filename);
-		CommentRepository cr = fac.createCommentRepository();
+		CommentRepositoryImpl cr = fac.createCommentRepository();
 		
 		long ownerId = -30666517,
 				itemId = 1449066;

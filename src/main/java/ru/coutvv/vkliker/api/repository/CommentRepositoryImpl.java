@@ -1,6 +1,7 @@
 package ru.coutvv.vkliker.api.repository;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.JsonArray;
@@ -20,7 +21,7 @@ import ru.coutvv.vkliker.util.LagUtil;
  * 
  * @author lomovtsevrs
  */
-public class CommentRepositoryImpl {
+public class CommentRepositoryImpl implements CommentRepository{
 
 	UserActor actor;
 	VkApiClient vk;
@@ -28,6 +29,35 @@ public class CommentRepositoryImpl {
 	public CommentRepositoryImpl(UserActor actor, VkApiClient vk) {
 		this.actor = actor;
 		this.vk = vk;
+	}
+
+
+	@Override
+	public JsonElement get(long ownerId, long postId, int count, int offset) {
+
+		return null;
+	}
+
+	@Override
+	public JsonElement getAll(long ownerId, long postId) {
+		int offcet = 0;
+		int maxCount = -1;
+		JsonArray result = new JsonArray();
+		do {
+			JsonElement data = getCommentsJson(ownerId, postId, 100, offcet);
+			JsonArray comments = data.getAsJsonObject().get("items").getAsJsonArray();
+
+			Iterator<JsonElement> iterator  = comments.iterator();
+			while(iterator.hasNext()) {
+				JsonElement comment = iterator.next();
+				result.add(comment);
+			}
+
+			if(maxCount == -1) maxCount = data.getAsJsonObject().get("count").getAsInt();
+			offcet += 100;
+			LagUtil.lag();//не палимся
+		} while(offcet < maxCount);
+		return result;
 	}
 
 	public List<Comment> getComments(Item post) {

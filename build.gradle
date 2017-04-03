@@ -35,6 +35,19 @@ dependencies {
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
     testCompile 'org.testng:testng:6.8.1'
+
+    /**
+     *     Добавляем спрингов
+     */
+    // https://mvnrepository.com/artifact/org.springframework/spring-context
+    compile group: 'org.springframework', name: 'spring-context', version: '3.0.2.RELEASE'
+    // https://mvnrepository.com/artifact/org.springframework/spring-beans
+    compile group: 'org.springframework', name: 'spring-beans', version: '3.0.5.RELEASE'
+
+
+    //all for db
+    compile 'org.hibernate:hibernate-core:5.2.6.Final'
+    compile group: 'org.postgresql', name: 'postgresql', version: '9.3-1100-jdbc4'
 }
 
 test {

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+
 public class TestConfiguration {
     private static final String filename = "app.properties";
 
