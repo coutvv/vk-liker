@@ -7,9 +7,9 @@ import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 
 import ru.coutvv.vkliker.api.FeedManager;
+import ru.coutvv.vkliker.gui.desk.VkLikerGui;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.notify.TelegramBot;
-import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 
 /**
  * Входная точка
@@ -24,13 +24,27 @@ public class EntryPoint {
 	static Factory fac;
 
 	public static void main(String[] args) {
+
+		if(Arrays.asList(args).contains("console")) {
+			consoleMode(args);
+		} else {
+			VkLikerGui.main(args);//GUI by default
+		}
+
+	}
+
+	/**
+	 * Консоль-мод лайкера
+	 * @param args
+	 */
+	private static void consoleMode(String[] args) {
 		try {
 			fac = new Factory(FILENAME);
 			fm = fac.createFeedManager();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		initLogSystem();
 
 		if(args.length >= 1 && Arrays.asList(args).contains("loop")) {
@@ -43,14 +57,10 @@ public class EntryPoint {
 			fm.likeAllLastHours(24);
 			System.exit(0);//вырубаемси
 		}
-		
-
 	}
 	
 	private static void initLogSystem() {
-//		TelegramBot bot = fac.createNotCozyNotifier();
 		TelegramBot bot = fac.createStaticalNotifier();
-
 
 		TelegramBotsApi api = new TelegramBotsApi();
 		try {

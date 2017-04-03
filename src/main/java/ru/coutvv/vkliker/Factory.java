@@ -21,6 +21,7 @@ import ru.coutvv.vkliker.notify.TelegramBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifyOnDemandBot;
 import ru.coutvv.vkliker.notify.bot.TelegramStatisticalBot;
+import ru.coutvv.vkliker.util.Consts;
 
 /**
  * Фабрика для создавания всяких интересеных штук
@@ -38,6 +39,10 @@ public class Factory {
 	/** data для нотификатора в Телеграм**/
 	private String teleToken;
 	private String chatId;
+
+	public Factory() throws IOException {
+		this(Consts.APP_PROPERTIES_FILENAME);
+	}
 
 	public Factory(String propertiesFilename) throws IOException {
 		InputStream in = Factory.class.getClassLoader().getResourceAsStream(propertiesFilename); 

@@ -8,14 +8,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.telegram.telegrambots.TelegramApiException;
+import org.telegram.telegrambots.TelegramBotsApi;
 import ru.coutvv.vkliker.Factory;
 import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.notify.Notifier;
+import ru.coutvv.vkliker.notify.TelegramBot;
 
 import java.io.IOException;
 
-public class VkLikerMain extends Application {
+public class VkLikerGui extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -28,10 +31,21 @@ public class VkLikerMain extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> Platform.exit());
+        initTelegramBot();
     }
 
 
+    private void initTelegramBot() throws IOException {
+        TelegramBot bot = new Factory().createStaticalNotifier();
 
+        TelegramBotsApi api = new TelegramBotsApi();
+        try {
+            api.registerBot(bot);
+        } catch (TelegramApiException e) {
+            throw new IllegalArgumentException("telegram register bot failed");
+        }
+        Logger.init(bot);
+    }
 
 
 
