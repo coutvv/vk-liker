@@ -9,16 +9,21 @@ import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.api.monitor.LikeCommentListener;
 import ru.coutvv.vkliker.api.repository.*;
 import ru.coutvv.vkliker.notify.Logger;
+import ru.coutvv.vkliker.util.Consts;
 import ru.coutvv.vkliker.util.LagUtil;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static ru.coutvv.vkliker.util.Consts.formatter;
 
 /**
  * Нужен для лайкания(а нафиг лайкер тогда?)
@@ -44,7 +49,9 @@ public class NewsManagerImpl implements NewsManager {
     }
 
     @Override
-    public ExecutorService likeLastPosts(int hours) {
+    public Future likeLastPosts(int hours) {
+
+        ExecutorService exec = Executors.newSingleThreadExecutor();
 
         Runnable task = () -> {
             ComplexFeedData cfd = null;
@@ -75,40 +82,37 @@ public class NewsManagerImpl implements NewsManager {
                     LagUtil.lag();
                 }
             }
+            exec.shutdown();
         };
 
-        ExecutorService exec = Executors.newSingleThreadExecutor();
-        exec.execute(task);
-        return exec;
+        Future result = exec.submit(task);
+        return result;
     }
 
     @Override
-    public ExecutorService scheduleLike(int period) {
+    public Future scheduleLike(int period) {
         Runnable task = () -> {
             Logger.log("[ lets like my feed forever ]");
             for (;;) {
                 int hours = period / 60 + 1;// период за который получим
                 // новости
                 try {
-                    ExecutorService executorService = likeLastPosts(hours);
-                    while(!executorService.isTerminated()) {
-                        Thread.yield();
-                    }
+                    Future future = likeLastPosts(hours);
+                    future.get();//lock thread
                 } catch (Exception e) {
                     Logger.log("[ Can't reach some feauture ]" + e.getMessage());
                 }
-                Logger.log("[ waiting next session ] this ended at " + new Date());
+                Logger.log("[ wait ] " + formatter.format(LocalDateTime.now()));
 
                 LagUtil.lag(period * 60 * 1000);
             }
         };
         ExecutorService exec = Executors.newSingleThreadExecutor();
-        exec.execute(task);
-        return exec;
+        return exec.submit(task);
     }
 
     @Override
-    public ExecutorService commentWatching(int minutes, long timeout) {
+    public Future commentWatching(int minutes, long timeout) {
         Runnable likeCommentTask = () -> {
             CommentMonitor cm = new CommentMonitor(liker, commentRepository, timeout, minutes);
             LikeCommentListener cll = new LikeCommentListener(liker);
@@ -132,8 +136,7 @@ public class NewsManagerImpl implements NewsManager {
         };
 
         ExecutorService exec = Executors.newSingleThreadExecutor();
-        exec.execute(likeCommentTask);
-        return exec;
+        return exec.submit(likeCommentTask);
     }
 
 

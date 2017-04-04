@@ -6,17 +6,18 @@ import ru.coutvv.vkliker.util.LagUtil;
 
 import java.io.IOException;
 import java.util.Observable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+import static ru.coutvv.vkliker.util.Consts.APP_PROPERTIES_FILENAME;
 
 /**
  * @author coutvv
  */
 public class MainController extends Observable {
 
-    final static String FILENAME = "app.properties";
     final static String STOP_ERROR = "Can't stop thread";
 
-    private ExecutorService likerThread;
+    private Future likerThread;
 
     private State currentState = State.stop;
 
@@ -32,7 +33,7 @@ public class MainController extends Observable {
      */
     public void start() throws IOException {
         if(currentState == State.stop) {
-            Factory fac = new Factory(FILENAME);
+            Factory fac = new Factory(APP_PROPERTIES_FILENAME);
             NewsManager nm = fac.createNewsManager();
 
             likerThread = nm.scheduleLike(15);
@@ -50,9 +51,9 @@ public class MainController extends Observable {
      */
     public void stop() throws Exception {
         if(likerThread != null && currentState == State.start) {
-            likerThread.shutdown();
+            likerThread.cancel(false);
             LagUtil.lag(500);
-            if(!likerThread.isShutdown()) {
+            if(!likerThread.isCancelled()) {
                 Logger.log(STOP_ERROR);
                 throw new Exception(STOP_ERROR);
             }
@@ -62,22 +63,22 @@ public class MainController extends Observable {
         this.notifyObservers(currentState);
     }
 
+    public void likeAllProfileNews(String id) {
+        System.out.println(id);
+        System.out.println(Thread.activeCount());
+    }
 
     public State getCurrentState() {
         return currentState;
     }
-
-    public void likeAllProfileNews(String id) {
-        System.out.println(id);
+    public enum State {
+        start, stop;
     }
 
     private static class Holder {
         private static MainController instance = new MainController();
     }
 
-    public enum State {
-        start, stop;
-    }
 
 
 }

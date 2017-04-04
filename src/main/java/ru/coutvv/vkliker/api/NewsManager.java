@@ -1,6 +1,7 @@
 package ru.coutvv.vkliker.api;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * @author coutvv
@@ -13,7 +14,7 @@ public interface NewsManager {
      * @param hours
      * @return Executor чтобы убить процесс
      */
-    ExecutorService likeLastPosts(int hours);
+    Future likeLastPosts(int hours);
 
     /**
      * Постоянно лайкать новости по расписанию
@@ -21,7 +22,7 @@ public interface NewsManager {
      * @param period в минутах
      * @return Executor чтобы убить процесс
      */
-    ExecutorService scheduleLike(int period);
+    Future scheduleLike(int period);
 
     /**
      * Мутная хрень
@@ -30,6 +31,6 @@ public interface NewsManager {
      * @param timeout
      * @return Executor чтобы убить процесс
      */
-    ExecutorService commentWatching(int minutes, long timeout);
+    Future commentWatching(int minutes, long timeout);
 
 }

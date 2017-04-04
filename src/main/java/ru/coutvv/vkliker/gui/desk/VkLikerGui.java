@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 import ru.coutvv.vkliker.Factory;
+import ru.coutvv.vkliker.MainController;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.notify.TelegramBot;
 
@@ -28,7 +29,14 @@ public class VkLikerGui extends Application {
         primaryStage.setTitle("VkLiker");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        primaryStage.setOnCloseRequest(e -> Platform.exit());
+        primaryStage.setOnCloseRequest(e -> {
+            try {
+                MainController.getInstance().stop();
+            } catch (Exception e1) {
+                Logger.log("can't stop controller thread");
+            }
+            Platform.exit();
+        });
         initTelegramBot();
     }
 

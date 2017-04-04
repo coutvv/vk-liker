@@ -5,26 +5,24 @@ import java.util.concurrent.*;
 /**
  * @author coutvv
  */
-public class TestMyLikerExecutor {
+public class TestExecutor {
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-//        executorService.execute(() -> {
-//            System.out.println("this end!");
-//        });
-        ExecutorCompletionService completionService = new ExecutorCompletionService(executorService);
-        completionService.submit(() -> {
+        Future<String> fut = executorService.submit(() -> {
             Thread.sleep(1000);
             System.out.println("shit!");
-           return "string";
+            executorService.shutdown();
+            return "string";
         });
-//        while() {
-//            System.out.println("fuck");
-//        }
         System.out.println("before");
-        Future f = completionService.take();
 
 //        f.get();
+        System.out.println("some");
+        fut.cancel(false);
+        if(!fut.isCancelled())
+            System.out.println(fut.get());
         System.out.println("after");
+        //executorService.shutdown();
     }
 }
