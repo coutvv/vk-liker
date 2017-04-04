@@ -7,6 +7,7 @@ import java.util.Map;
 import ru.coutvv.vkliker.api.Liker;
 import ru.coutvv.vkliker.api.entity.Comment;
 import ru.coutvv.vkliker.api.entity.Item;
+import ru.coutvv.vkliker.api.repository.CommentRepository;
 import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
 import ru.coutvv.vkliker.util.LagUtil;
 
@@ -19,7 +20,7 @@ public class CommentMonitor extends Observer {
 
 	private final Liker liker;
 	
-	private final CommentRepositoryImpl commentRep;
+	private final CommentRepository commentRep;
 	
 	/**
 	 * Число -- количество комментариев, которые мы пролайкали
@@ -37,7 +38,7 @@ public class CommentMonitor extends Observer {
 	 */
 	private long timeout = 1 * 60 * 60; //1 час по умолчанию
 	
-	public CommentMonitor(Liker liker, CommentRepositoryImpl commentRep) {
+	public CommentMonitor(Liker liker, CommentRepository commentRep) {
 		this.liker = liker;
 		this.commentRep = commentRep;
 		watchPosts = new HashMap<>();
@@ -52,7 +53,7 @@ public class CommentMonitor extends Observer {
 	 * @param timeout в минутах 
 	 * @param period в минутах
 	 */
-	public CommentMonitor(Liker liker, CommentRepositoryImpl commentRep, long timeout, long period) {
+	public CommentMonitor(Liker liker, CommentRepository commentRep, long timeout, long period) {
 		this(liker, commentRep);
 		this.timeout = timeout * 60;
 		this.period = period * 60;
@@ -67,7 +68,10 @@ public class CommentMonitor extends Observer {
 	}
 	
 	public void addToWatch(Item post) {
-		List<Comment> cms = commentRep.getComments(post);
+		Long author = post.getSourceId();
+		Long postId = post.getPostId();
+		List<Comment> cms = Comment.parseJson(commentRep.getAll(author, postId), postId, author);
+		commentRep.getAll(author, postId);
 		watchPosts.put(post, cms.size());
 	}
 	
@@ -87,7 +91,11 @@ public class CommentMonitor extends Observer {
 
 					long endDate = post.getDate() + WATCH_TIME;
 					if(endDate > System.currentTimeMillis()/1000) {
-						List<Comment> cms = commentRep.getComments(post, watchPosts.get(post));
+
+						Long author = post.getSourceId();
+						Long postId = post.getPostId();
+						List<Comment> cms = Comment.parseJson(commentRep.getAll(author, postId), postId, author);
+
 						if(!cms.isEmpty()) {
 							System.out.println("Появились новые комментарии. Пост ∈ " + post.getSourceId());
 							digest(post, cms);

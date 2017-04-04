@@ -1,12 +1,11 @@
 package ru.coutvv.vkliker;
 
-import ru.coutvv.vkliker.api.FeedManager;
+import ru.coutvv.vkliker.api.NewsManager;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.util.LagUtil;
 
 import java.io.IOException;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -33,11 +32,10 @@ public class MainController extends Observable {
      */
     public void start() throws IOException {
         if(currentState == State.stop) {
-            FeedManager fm;
-            Factory fac = null;
-            fac = new Factory(FILENAME);
-            fm = fac.createFeedManager();
-            likerThread = fm.scheduleLike(15);
+            Factory fac = new Factory(FILENAME);
+            NewsManager nm = fac.createNewsManager();
+
+            likerThread = nm.scheduleLike(15);
             currentState = State.start;
         } else {
             throw new RuntimeException("Процесс запущен!!");
@@ -67,6 +65,10 @@ public class MainController extends Observable {
 
     public State getCurrentState() {
         return currentState;
+    }
+
+    public void likeAllProfileNews(String id) {
+        System.out.println(id);
     }
 
     private static class Holder {

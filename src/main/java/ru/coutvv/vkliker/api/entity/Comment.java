@@ -1,8 +1,13 @@
 package ru.coutvv.vkliker.api.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import ru.coutvv.vkliker.util.LagUtil;
 
 public class Comment {
 
@@ -66,5 +71,15 @@ public class Comment {
 
 	public boolean isLiked() {
 		return isLiked;
+	}
+
+	public static List<Comment> parseJson(JsonElement json, long postId, long ownerId) {
+		List<Comment> result = new ArrayList<>();
+		JsonArray comments = json.getAsJsonObject().get("items").getAsJsonArray();
+		for(int i = 0; i < comments.size(); i++) {
+			JsonObject com = comments.get(i).getAsJsonObject();
+			result.add(new Comment(com, postId, ownerId));
+		}
+		return result;
 	}
 }

@@ -1,24 +1,16 @@
 package ru.coutvv.vkliker.gui.desk;
 
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import org.telegram.telegrambots.TelegramApiException;
-import org.telegram.telegrambots.TelegramBotsApi;
-import ru.coutvv.vkliker.Factory;
+import javafx.scene.control.TextField;
 import ru.coutvv.vkliker.MainController;
-import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.notify.Notifier;
-import ru.coutvv.vkliker.notify.TelegramBot;
 import ru.coutvv.vkliker.orm.LikePostRepository;
-import ru.coutvv.vkliker.util.LagUtil;
-import sun.applet.Main;
 
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author coutvv
@@ -32,6 +24,7 @@ public class VKLikerGuiController implements Observer{
     public TextArea statistic;
 
     static final LikePostRepository lpp = new LikePostRepository();
+    public TextField profileId;
     private Notifier notifier = new GuiNotifier();
 
     MainController vklikerController;
@@ -77,11 +70,15 @@ public class VKLikerGuiController implements Observer{
         }
     }
 
+    public void likeAllProfileNews() {
+        vklikerController.likeAllProfileNews(profileId.getText());
+    }
+
     private class GuiNotifier implements Notifier {
         @Override
         public void print(String msg) {
             if(log.getText().length() > 2000) log.clear();
-            log.setText(log.getText() + "\n" + msg);
+            log.setText(log.getText() + msg + "\n");
         }
     }
 

@@ -11,9 +11,7 @@ import javafx.stage.Stage;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 import ru.coutvv.vkliker.Factory;
-import ru.coutvv.vkliker.api.FeedManager;
 import ru.coutvv.vkliker.notify.Logger;
-import ru.coutvv.vkliker.notify.Notifier;
 import ru.coutvv.vkliker.notify.TelegramBot;
 
 import java.io.IOException;

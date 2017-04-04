@@ -1,27 +1,28 @@
 package ru.coutvv.vkliker;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.telegram.telegrambots.TelegramApiException;
-
 import com.google.gson.Gson;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
-
-import ru.coutvv.vkliker.api.FeedManager;
+import org.telegram.telegrambots.TelegramApiException;
 import ru.coutvv.vkliker.api.Liker;
+import ru.coutvv.vkliker.api.NewsManager;
+import ru.coutvv.vkliker.api.NewsManagerImpl;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
+import ru.coutvv.vkliker.api.repository.CommentRepository;
 import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
+import ru.coutvv.vkliker.api.repository.PostRepository;
 import ru.coutvv.vkliker.api.repository.PostRepositoryImpl;
 import ru.coutvv.vkliker.notify.TelegramBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifyOnDemandBot;
 import ru.coutvv.vkliker.notify.bot.TelegramStatisticalBot;
 import ru.coutvv.vkliker.util.Consts;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * Фабрика для создавания всяких интересеных штук
@@ -36,7 +37,7 @@ public class Factory {
 	private UserActor actor;
 	private VkApiClient vk;
 	
-	/** data для нотификатора в Телеграм**/
+	/** data для нотификатора в Телеграм */
 	private String teleToken;
 	private String chatId;
 
@@ -64,16 +65,16 @@ public class Factory {
 			e.printStackTrace();
 		}
 	}
-	
-	public FeedManager createFeedManager() {
-		return new FeedManager(actor, vk);
+
+	public NewsManager createNewsManager() {
+		return new NewsManagerImpl(actor, vk);
 	}
 	
-	public CommentRepositoryImpl createCommentRepository() {
+	public CommentRepository createCommentRepository() {
 		return new CommentRepositoryImpl(actor, vk);
 	}
 	
-	public PostRepositoryImpl createPostRepository() {
+	public PostRepository createPostRepository() {
 		return new PostRepositoryImpl(actor, vk);
 	}
 	
@@ -96,7 +97,6 @@ public class Factory {
 	}
 
 	public TelegramBot createNotCozyNotifier() {
-
 		try {
 			TelegramNotifyOnDemandBot teleBot = new TelegramNotifyOnDemandBot(teleToken, chatId);
 			return teleBot;
@@ -104,10 +104,9 @@ public class Factory {
 			e.printStackTrace();
 		}
 		throw new IllegalArgumentException("can't create notifier");
-
 	}
-	public TelegramBot createStaticalNotifier() {
 
+	public TelegramBot createStaticalNotifier() {
 		try {
 			TelegramStatisticalBot teleBot = new TelegramStatisticalBot(teleToken, chatId);
 			return teleBot;

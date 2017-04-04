@@ -18,7 +18,7 @@ public interface NewsManager {
     /**
      * Постоянно лайкать новости по расписанию
      *
-     * @param period
+     * @param period в минутах
      * @return Executor чтобы убить процесс
      */
     ExecutorService scheduleLike(int period);

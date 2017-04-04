@@ -2,13 +2,27 @@ package ru.coutvv.vkliker.api;
 
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
-import ru.coutvv.vkliker.api.repository.PostRepositoryImpl;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
+import ru.coutvv.vkliker.api.entity.Item;
+import ru.coutvv.vkliker.api.monitor.CommentMonitor;
+import ru.coutvv.vkliker.api.monitor.LikeCommentListener;
+import ru.coutvv.vkliker.api.repository.*;
+import ru.coutvv.vkliker.notify.Logger;
+import ru.coutvv.vkliker.util.LagUtil;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
+ * Нужен для лайкания(а нафиг лайкер тогда?)
+ *
  * @author coutvv
  */
 public class NewsManagerImpl implements NewsManager {
@@ -17,33 +31,110 @@ public class NewsManagerImpl implements NewsManager {
     private final VkApiClient vk;
     private final Liker liker;
 
-    private final PostRepositoryImpl postRepository;
-    private final CommentRepositoryImpl commentRepositoryImpl;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
-    private Map<Long, String> names;
 
     public NewsManagerImpl(UserActor actor, VkApiClient vkClient) {
-
         this.actor = actor;
         this.vk = vkClient;
-
-        postRepository = new PostRepositoryImpl(actor, vk);
-        liker = new Liker(actor, vk);
-        commentRepositoryImpl = new CommentRepositoryImpl(actor, vk);
+        this.postRepository = new PostRepositoryImpl(actor, vk);
+        this.liker = new Liker(actor, vk);
+        this.commentRepository = new CommentRepositoryImpl(actor, vk);
     }
 
     @Override
     public ExecutorService likeLastPosts(int hours) {
-        return null;
+
+        Runnable task = () -> {
+            ComplexFeedData cfd = null;
+            try {
+                cfd = new ComplexFeedData(postRepository.getAtLast(hours * 60));
+            } catch (ClientException e) {
+                e.printStackTrace();
+            } catch (ApiException e) {
+                e.printStackTrace();
+            }
+
+            //все запостившие пацаны
+            final Map<Long, String> names = Stream.of(cfd.getProfiles(), cfd.getGroups())
+                                                .map(Map::entrySet)
+                                                .flatMap(Collection::stream)
+                                                .collect(Collectors.toMap(Map.Entry::getKey, (e) -> e.getValue().toString()));
+
+            for(Item item : cfd.getItems()) {
+                if(item.getLikes().getCanLike() == 1 && item.getSourceId() != (long)actor.getId()) {//тип не лайкать свои посты
+                    long ownerId = Math.abs(item.getSourceId());//тип у груп, чтоб тоже норм было
+                    liker.likeAndSave(item, names.get(ownerId));
+                    if(item.getSourceId() > 0) {
+                        Logger.log("liked post by person: " + cfd.getProfiles().get(ownerId));
+                    } else {
+                        Logger.log("liked post by community: " + cfd.getGroups().get(ownerId));
+                    }
+
+                    LagUtil.lag();
+                }
+            }
+        };
+
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        exec.execute(task);
+        return exec;
     }
 
     @Override
     public ExecutorService scheduleLike(int period) {
-        return null;
+        Runnable task = () -> {
+            Logger.log("[ lets like my feed forever ]");
+            for (;;) {
+                int hours = period / 60 + 1;// период за который получим
+                // новости
+                try {
+                    ExecutorService executorService = likeLastPosts(hours);
+                    while(!executorService.isTerminated()) {
+                        Thread.yield();
+                    }
+                } catch (Exception e) {
+                    Logger.log("[ Can't reach some feauture ]" + e.getMessage());
+                }
+                Logger.log("[ waiting next session ] this ended at " + new Date());
+
+                LagUtil.lag(period * 60 * 1000);
+            }
+        };
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        exec.execute(task);
+        return exec;
     }
 
     @Override
     public ExecutorService commentWatching(int minutes, long timeout) {
-        return null;
+        Runnable likeCommentTask = () -> {
+            CommentMonitor cm = new CommentMonitor(liker, commentRepository, timeout, minutes);
+            LikeCommentListener cll = new LikeCommentListener(liker);
+            cm.addListener(cll);
+            System.out.println("<<Watching for comments!>>");
+            for (;;) {
+                System.out.println("[ Comment session ] this ended at " + new Date());
+                List<Item> posts = null;
+                try {
+                    posts = ComplexFeedData.parseItems(postRepository.getAtLast(minutes));
+                } catch (ClientException e) {
+                    e.printStackTrace();
+                } catch (ApiException e) {
+                    e.printStackTrace();
+                }
+                for (Item post : posts) {
+                    cm.addToWatch(post);
+                }
+                LagUtil.lag(minutes * 60 * 1000);
+            }
+        };
+
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        exec.execute(likeCommentTask);
+        return exec;
     }
+
+
 }

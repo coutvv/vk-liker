@@ -1,15 +1,14 @@
 package ru.coutvv.vkliker;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
-
-import ru.coutvv.vkliker.api.FeedManager;
+import ru.coutvv.vkliker.api.NewsManager;
 import ru.coutvv.vkliker.gui.desk.VkLikerGui;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.notify.TelegramBot;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Входная точка
@@ -20,7 +19,7 @@ public class EntryPoint {
 	
 	final static String FILENAME = "app.properties";
 	
-	static FeedManager fm;
+	static NewsManager newsManager;
 	static Factory fac;
 
 	public static void main(String[] args) {
@@ -40,7 +39,7 @@ public class EntryPoint {
 	private static void consoleMode(String[] args) {
 		try {
 			fac = new Factory(FILENAME);
-			fm = fac.createFeedManager();
+			newsManager = fac.createNewsManager();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -48,13 +47,13 @@ public class EntryPoint {
 		initLogSystem();
 
 		if(args.length >= 1 && Arrays.asList(args).contains("loop")) {
-			fm.scheduleLike(15);
+			newsManager.scheduleLike(15);
 
 			if(Arrays.asList(args).contains("comment")) { //отслеживаем комменты
-				fm.commentWatching(15, 420); //4 часа отслеживаем, каждые 15 минут лайкаем новые
+				newsManager.commentWatching(15, 420); //4 часа отслеживаем, каждые 15 минут лайкаем новые
 			}
 		} else {
-			fm.likeAllLastHours(24);
+			newsManager.likeLastPosts(24);
 			System.exit(0);//вырубаемси
 		}
 	}
