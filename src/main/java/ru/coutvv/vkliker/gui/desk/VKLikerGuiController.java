@@ -32,6 +32,7 @@ public class VKLikerGuiController implements Observer{
     public VKLikerGuiController() {
         vklikerController = MainController.getInstance();
         Logger.init(notifier);
+        vklikerController.addObserver(this);
     }
 
     public void start() throws IOException {
