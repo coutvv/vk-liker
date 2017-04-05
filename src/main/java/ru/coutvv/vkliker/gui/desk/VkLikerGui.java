@@ -36,6 +36,7 @@ public class VkLikerGui extends Application {
                 Logger.log("can't stop controller thread");
             }
             Platform.exit();
+            System.exit(0);
         });
         initTelegramBot();
     }

@@ -1,5 +1,7 @@
 package ru.coutvv.vkliker.gui.desk;
 
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -65,14 +67,20 @@ public class VKLikerGuiController implements Observer{
             start.setDisable(true);
             stop.setDisable(false);
         } else {
-            notifier.print("vk-liker has started");
+            notifier.print("vk-liker has stopped");
             stop.setDisable(true);
             start.setDisable(false);
         }
     }
 
     public void likeAllProfileNews() {
-        vklikerController.likeAllProfileNews(profileId.getText());
+        try {
+            vklikerController.likeAllProfileNews(profileId.getText());
+        } catch (ClientException e) {
+            e.printStackTrace();
+        } catch (ApiException e) {
+            e.printStackTrace();
+        }
     }
 
     private class GuiNotifier implements Notifier {

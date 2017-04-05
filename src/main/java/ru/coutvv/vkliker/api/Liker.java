@@ -9,6 +9,11 @@ import ru.coutvv.vkliker.api.entity.Comment;
 import ru.coutvv.vkliker.api.entity.Item;
 import ru.coutvv.vkliker.orm.LikePostRepository;
 import ru.coutvv.vkliker.orm.entity.LikePost;
+import ru.coutvv.vkliker.util.LagUtil;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Liker {
 	
@@ -21,22 +26,59 @@ public class Liker {
 		this.vk = vk;
 	}
 
+	/**
+	 * лайкание без сохранения
+	 * @param items
+	 */
+	public void like(List<Item> items) {
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Runnable task = () -> {
+			for(Item item : items) {
+				like(item);
+				LagUtil.lag();
+			}
+			executor.shutdown();
+		};
+		executor.submit(task);
+	}
 
-	public void like(Item post) {
-		String script = "return API.likes.add({\"type\": \"post" + "\", \"owner_id\": " + post.getSourceId() + ", "
-				+ "\"item_id\" : " + post.getPostId() + "});";
-		if(post.getLikes().getCanLike() == 0) return;
+
+	private final String script = "return API.likes.add({" +
+										"\"type\": \"post\", \"owner_id\": %1$d, " +
+										"\"item_id\" : %2$d});";
+
+	public boolean like(Item post) {
+		Long id = post.getPostId();
+		id = id == null ? post.getId() : id;
+		Long authorId = post.getSourceId();
+		authorId = authorId == null ? post.getOwnerId() : authorId;
+
+		if(post.getLikes().getCanLike() == 0) return false;
 		try {
-			vk.execute().code(actor, script).execute();
+			vk.execute().code(actor, String.format(script, authorId, id)).execute();
+
 		} catch (ApiException | ClientException e) {
-			System.out.println("Не смоглось залайкоть! D:]");
+			System.out.println("Не смоглось залайкоть! D:] ПРобуем обойти");
+			int time = 1000;
+			while(time < 600000) {
+				try {
+					vk.execute().code(actor, String.format(script, authorId, id)).execute();
+					return true;
+				} catch (ApiException | ClientException e1) {
+					LagUtil.lag(time);
+					time *= 2;
+				}
+			}
 		}
+		return false;
 	}
 
 	public void likeAndSave(Item post, String author) {
-		like(post);
-		LikePost lp = new LikePost(author);
-		lpr.saveLikePost(lp);
+		boolean isLiked = like(post);
+		if(isLiked) {
+			LikePost lp = new LikePost(author);
+			lpr.saveLikePost(lp);
+		}
 	}
 	
 	/**

@@ -8,6 +8,9 @@ import com.vk.api.sdk.objects.base.LikesInfo;
  */
 public class Item {
 
+
+	@SerializedName("id")
+	private Long id;
 	@SerializedName("type") 
 	private String type;
 	@SerializedName("source_id") 
@@ -22,6 +25,8 @@ public class Item {
 	private String text;
 	@SerializedName("signer_id") 
 	private Long signerId;
+	@SerializedName("owner_id")
+	private Long ownerId;
 	
 	private LikesInfo likes;
 	
@@ -87,6 +92,22 @@ public class Item {
 
 	public void setSignerId(Long signerId) {
 		this.signerId = signerId;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
 	}
 
 	public String toString() {

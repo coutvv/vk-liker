@@ -6,14 +6,9 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import org.telegram.telegrambots.TelegramApiException;
-import ru.coutvv.vkliker.api.Liker;
-import ru.coutvv.vkliker.api.NewsManager;
-import ru.coutvv.vkliker.api.NewsManagerImpl;
+import ru.coutvv.vkliker.api.*;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
-import ru.coutvv.vkliker.api.repository.CommentRepository;
-import ru.coutvv.vkliker.api.repository.CommentRepositoryImpl;
-import ru.coutvv.vkliker.api.repository.PostRepository;
-import ru.coutvv.vkliker.api.repository.PostRepositoryImpl;
+import ru.coutvv.vkliker.api.repository.*;
 import ru.coutvv.vkliker.notify.TelegramBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifierBot;
 import ru.coutvv.vkliker.notify.bot.TelegramNotifyOnDemandBot;
@@ -68,6 +63,14 @@ public class Factory {
 
 	public NewsManager createNewsManager() {
 		return new NewsManagerImpl(actor, vk);
+	}
+
+	public WallManager createWallManager() {
+		return new WallManagerImpl(actor, vk, createProfileRepository());
+	}
+
+	public ProfileRepository createProfileRepository() {
+		return new ProfileRepositoryImpl(actor, vk);
 	}
 	
 	public CommentRepository createCommentRepository() {

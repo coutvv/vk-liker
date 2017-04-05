@@ -1,6 +1,9 @@
 package ru.coutvv.vkliker;
 
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import ru.coutvv.vkliker.api.NewsManager;
+import ru.coutvv.vkliker.api.WallManager;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.util.LagUtil;
 
@@ -21,7 +24,18 @@ public class MainController extends Observable {
 
     private State currentState = State.stop;
 
-    private MainController() {}
+    private NewsManager nm;
+    private WallManager wallManager;
+
+    private MainController() {
+        try {
+            Factory fac = new Factory(APP_PROPERTIES_FILENAME);
+            nm = fac.createNewsManager();
+            wallManager = fac.createWallManager();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static MainController getInstance() {
         return Holder.instance;
@@ -33,8 +47,6 @@ public class MainController extends Observable {
      */
     public void start() throws IOException {
         if(currentState == State.stop) {
-            Factory fac = new Factory(APP_PROPERTIES_FILENAME);
-            NewsManager nm = fac.createNewsManager();
 
             likerThread = nm.scheduleLike(15);
             currentState = State.start;
@@ -63,9 +75,11 @@ public class MainController extends Observable {
         this.notifyObservers(currentState);
     }
 
-    public void likeAllProfileNews(String id) {
+    public void likeAllProfileNews(String id) throws ClientException, ApiException {
         System.out.println(id);
-        System.out.println(Thread.activeCount());
+//        wallManager.getPosts(id);
+
+        wallManager.likeWholeWall(id);
     }
 
     public State getCurrentState() {

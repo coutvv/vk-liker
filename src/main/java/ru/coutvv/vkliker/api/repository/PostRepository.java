@@ -32,4 +32,12 @@ public interface PostRepository {
 	 */
 	JsonElement getLast(int count) throws ClientException, ApiException;
 
+	/**
+	 * Получени json-объекта с данными о записях на стене юзера
+	 *
+	 * @param userId
+	 * @return
+	 */
+	JsonElement getWall(String userId) throws ClientException, ApiException;
+
 }

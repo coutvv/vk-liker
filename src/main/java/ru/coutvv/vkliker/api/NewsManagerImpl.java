@@ -9,7 +9,6 @@ import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.api.monitor.LikeCommentListener;
 import ru.coutvv.vkliker.api.repository.*;
 import ru.coutvv.vkliker.notify.Logger;
-import ru.coutvv.vkliker.util.Consts;
 import ru.coutvv.vkliker.util.LagUtil;
 
 import java.time.LocalDateTime;
