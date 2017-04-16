@@ -5,6 +5,8 @@ import com.vk.api.sdk.exceptions.ClientException;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.coutvv.vkliker.MainController;
 import ru.coutvv.vkliker.notify.Logger;
 import ru.coutvv.vkliker.notify.Notifier;
@@ -17,7 +19,10 @@ import java.util.Observer;
 /**
  * @author coutvv
  */
-public class VKLikerGuiController implements Observer{
+public class VKLikerGuiController implements Observer {
+
+    private static final Log logger = LogFactory.getLog(VKLikerGuiController.class);
+
     public TextArea log;
     public Button start;
     public Button stop;
@@ -76,10 +81,8 @@ public class VKLikerGuiController implements Observer{
     public void likeAllProfileNews() {
         try {
             vklikerController.likeAllProfileNews(profileId.getText());
-        } catch (ClientException e) {
-            e.printStackTrace();
-        } catch (ApiException e) {
-            e.printStackTrace();
+        } catch (ClientException | ApiException e) {
+            logger.warn("likeAllProfileNews", e);
         }
     }
 

@@ -1,6 +1,4 @@
-package ru.coutvv.vkliker.gui.desk;/**
- * @author coutvv
- */
+package ru.coutvv.vkliker.gui.desk;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -8,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 import ru.coutvv.vkliker.Factory;
@@ -17,7 +17,12 @@ import ru.coutvv.vkliker.notify.TelegramBot;
 
 import java.io.IOException;
 
+/**
+ * @author coutvv
+ */
 public class VkLikerGui extends Application {
+
+    private static final Log log = LogFactory.getLog(VkLikerGui.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -33,6 +38,7 @@ public class VkLikerGui extends Application {
             try {
                 MainController.getInstance().stop();
             } catch (Exception e1) {
+                log.error("can't stop controller thread", e1);
                 Logger.log("can't stop controller thread");
             }
             Platform.exit();

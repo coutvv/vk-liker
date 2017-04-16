@@ -1,5 +1,7 @@
 package ru.coutvv.vkliker.notify;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
@@ -7,9 +9,11 @@ import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 public abstract class TelegramBot extends TelegramLongPollingBot implements Notifier  {
-	
+
+    private final Log log = LogFactory.getLog(this.getClass());
+
 	private String token;
-	private final String NAME = "vkliker";
+	private final static String NAME = "vkliker";
 	private final String chatId;
 	private final ResponseStrategy resp;
 	
@@ -42,7 +46,7 @@ public abstract class TelegramBot extends TelegramLongPollingBot implements Noti
 		try {
 			sendMessage(message);
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
+		    log.warn("Send message error", e);
 		}
 	}
 
@@ -54,7 +58,7 @@ public abstract class TelegramBot extends TelegramLongPollingBot implements Noti
 		try {
 			sendMessage(message);
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
+		    log.warn("Send message error", e);
 		}
 	}
 
