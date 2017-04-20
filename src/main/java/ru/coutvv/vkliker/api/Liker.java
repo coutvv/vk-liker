@@ -5,6 +5,8 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.coutvv.vkliker.api.entity.Comment;
 import ru.coutvv.vkliker.api.entity.Item;
 import ru.coutvv.vkliker.orm.LikePostRepository;
@@ -16,7 +18,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Liker {
-	
+
+    private static final Log log = LogFactory.getLog(Liker.class);
+
 	private final UserActor actor;
 	private final VkApiClient vk;
 	private LikePostRepository lpr = new LikePostRepository();
@@ -92,11 +96,9 @@ public class Liker {
 				+ "\"item_id\" : " + comment.getCommentId() + "});";
 		try {
 			vk.execute().code(actor, script).execute();
-		} catch (ApiException e) {
-			e.printStackTrace();
-		} catch (ClientException e) {
-			e.printStackTrace();
+		} catch (ApiException | ClientException e) {
+		    log.error("error on like", e);
 		}
-	}
+    }
 	
 }

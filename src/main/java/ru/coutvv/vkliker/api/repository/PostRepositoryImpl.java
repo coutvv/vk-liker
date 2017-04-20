@@ -28,15 +28,13 @@ public class PostRepositoryImpl implements PostRepository {
 		long time = System.currentTimeMillis()/1000 - (60 * minutes);
 		String arg =  "\"start_time\" : \"" + time + "\",";
 		String script = String.format(SCRIPT_TEMPLATE, String.format(TIME_ARGUMENT, time));
-		JsonElement json = vk.execute().code(actor, script).execute();
-		return json;
+        return vk.execute().code(actor, script).execute();
 	}
 
 	@Override
 	public JsonElement getLast(int count) throws ClientException, ApiException {
 		String script =  String.format(SCRIPT_TEMPLATE, String.format(COUNT_ARGUMENT_TEMPLATE, count));
-		JsonElement json = vk.execute().code(actor, script).execute();
-		return json;
+        return vk.execute().code(actor, script).execute();
 	}
 
 	@Override

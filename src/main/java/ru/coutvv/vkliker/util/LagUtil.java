@@ -1,9 +1,13 @@
 package ru.coutvv.vkliker.util;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.Random;
 
 public class LagUtil {
 
+    private static final Log log = LogFactory.getLog(LagUtil.class);
 	private static final long TIMEOUT = 500;
 	private static final Random rand = new Random();
 	/**
@@ -15,7 +19,7 @@ public class LagUtil {
 			dtime = (rand.nextBoolean() ? dtime : -dtime);//warious time
 			Thread.sleep(TIMEOUT + dtime);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			log.error("sleep interrupt", e);
 		}
 	}
 	
@@ -23,7 +27,7 @@ public class LagUtil {
 		try { //waiting
 			Thread.sleep(timeout);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+            log.error("sleep interrupt", e);
 		}
 	}
 }
