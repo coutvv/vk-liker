@@ -4,6 +4,8 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.coutvv.vkliker.api.entity.Item;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
 import ru.coutvv.vkliker.api.monitor.LikeCommentListener;
@@ -31,6 +33,8 @@ import static ru.coutvv.vkliker.util.Consts.formatter;
  */
 public class NewsManagerImpl implements NewsManager {
 
+    private static final Log log = LogFactory.getLog(NewsManagerImpl.class);
+
     private final UserActor actor;
     private final VkApiClient vk;
     private final Liker liker;
@@ -56,10 +60,9 @@ public class NewsManagerImpl implements NewsManager {
             ComplexFeedData cfd = null;
             try {
                 cfd = new ComplexFeedData(postRepository.getAtLast(hours * 60));
-            } catch (ClientException e) {
-                e.printStackTrace();
-            } catch (ApiException e) {
-                e.printStackTrace();
+            } catch (ClientException | ApiException e) {
+                log.warn("init cfd likeLastPost", e);
+                throw new IllegalStateException(e);
             }
 
             //все запостившие пацаны
@@ -84,15 +87,15 @@ public class NewsManagerImpl implements NewsManager {
             exec.shutdown();
         };
 
-        Future result = exec.submit(task);
-        return result;
+        return exec.submit(task);
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public Future scheduleLike(int period) {
         Runnable task = () -> {
             Logger.log("[ lets like my feed forever ]");
-            for (;;) {
+            while (true){
                 int hours = period / 60 + 1;// период за который получим
                 // новости
                 try {
@@ -110,6 +113,7 @@ public class NewsManagerImpl implements NewsManager {
         return exec.submit(task);
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     @Override
     public Future commentWatching(int minutes, long timeout) {
         Runnable likeCommentTask = () -> {
@@ -117,15 +121,14 @@ public class NewsManagerImpl implements NewsManager {
             LikeCommentListener cll = new LikeCommentListener(liker);
             cm.addListener(cll);
             System.out.println("<<Watching for comments!>>");
-            for (;;) {
+            while (true){
                 System.out.println("[ Comment session ] this ended at " + new Date());
                 List<Item> posts = null;
                 try {
                     posts = ComplexFeedData.parseItems(postRepository.getAtLast(minutes));
-                } catch (ClientException e) {
-                    e.printStackTrace();
-                } catch (ApiException e) {
-                    e.printStackTrace();
+                } catch (ClientException | ApiException e) {
+                    log.warn("get parse items", e);
+                    throw new IllegalStateException(e);
                 }
                 for (Item post : posts) {
                     cm.addToWatch(post);

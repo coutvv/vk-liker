@@ -31,19 +31,19 @@ public class LikePostRepository {
      */
     public long getCountLike() {
         try(Session session = SessionUtil.getSession()) {
-            List<LikePost> res =session.createQuery("from LikePost").getResultList();
+            List<LikePost> res =session.createQuery("from LikePost", LikePost.class).getResultList();
             return res.size();
         }
     }
 
-    private final long DAY_TIME = (24*60*60*1000);
+    private static final long DAY_TIME = 24 * 60 * 60 * 1000;
     /**
      * Количество лайков за последние сутки
      */
     public long getCountLikePerDay() {
         try(Session session = SessionUtil.getSession()) {
             long time = System.currentTimeMillis() - DAY_TIME;
-            List<LikePost> res = session.createQuery("from LikePost l where l.time > " + time).getResultList();
+            List<LikePost> res = session.createQuery("from LikePost l where l.time > " + time, LikePost.class).getResultList();
             return res.size();
         }
     }

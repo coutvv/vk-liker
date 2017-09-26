@@ -5,6 +5,8 @@ import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.telegram.telegrambots.TelegramApiException;
 import ru.coutvv.vkliker.api.*;
 import ru.coutvv.vkliker.api.monitor.CommentMonitor;
@@ -25,6 +27,8 @@ import java.util.Properties;
  * @author lomovtsevrs
  */
 public class Factory {
+
+    private static final Log log = LogFactory.getLog(Factory.class);
 	
 	private String token;
 	private int userId;
@@ -57,7 +61,7 @@ public class Factory {
 		try {
 			in.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+		    log.warn("Error in construct", e);
 		}
 	}
 
@@ -94,9 +98,9 @@ public class Factory {
 			TelegramNotifierBot teleBot = new TelegramNotifierBot(teleToken, chatId);
 			return teleBot;
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
-		}
-		throw new IllegalArgumentException("can't create notifier");
+		    log.debug("CreateNotifier", e);
+            throw new IllegalArgumentException("can't create notifier", e);
+        }
 	}
 
 	public TelegramBot createNotCozyNotifier() {
@@ -104,9 +108,9 @@ public class Factory {
 			TelegramNotifyOnDemandBot teleBot = new TelegramNotifyOnDemandBot(teleToken, chatId);
 			return teleBot;
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
-		}
-		throw new IllegalArgumentException("can't create notifier");
+            log.debug("createNotCozyNotifier", e);
+            throw new IllegalArgumentException("can't create notifier", e);
+        }
 	}
 
 	public TelegramBot createStaticalNotifier() {
@@ -114,9 +118,9 @@ public class Factory {
 			TelegramStatisticalBot teleBot = new TelegramStatisticalBot(teleToken, chatId);
 			return teleBot;
 		} catch (TelegramApiException e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException("can't create notifier");
-		}
+            log.debug("createStaticalNotifier", e);
+            throw new IllegalArgumentException("can't create notifier", e);
+        }
 	}
 	
 }

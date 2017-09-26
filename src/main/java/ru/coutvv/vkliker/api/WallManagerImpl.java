@@ -6,6 +6,8 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.coutvv.vkliker.Factory;
 import ru.coutvv.vkliker.api.entity.Item;
 import ru.coutvv.vkliker.api.entity.Profile;
@@ -23,6 +25,8 @@ import java.util.concurrent.Executors;
  * @author coutvv
  */
 public class WallManagerImpl implements WallManager {
+
+    private static final Log log = LogFactory.getLog(WallManagerImpl.class);
 
     private final UserActor actor;
     private final VkApiClient vk;
@@ -60,7 +64,7 @@ public class WallManagerImpl implements WallManager {
                     LagUtil.lag();
                 }
             } catch (ClientException | ApiException e) {
-                e.printStackTrace();
+                log.debug("likeWholeWall", e);
             }
             executorService.shutdown();
         };

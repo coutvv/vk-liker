@@ -1,5 +1,7 @@
 package ru.coutvv.vkliker;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.telegram.telegrambots.TelegramApiException;
 import org.telegram.telegrambots.TelegramBotsApi;
 import ru.coutvv.vkliker.api.NewsManager;
@@ -16,7 +18,9 @@ import java.util.Arrays;
  * @author lomovtsevrs
  */
 public class EntryPoint {
-	
+
+    private static final Log log = LogFactory.getLog(EntryPoint.class);
+
 	final static String FILENAME = "app.properties";
 	
 	static NewsManager newsManager;
@@ -41,7 +45,7 @@ public class EntryPoint {
 			fac = new Factory(FILENAME);
 			newsManager = fac.createNewsManager();
 		} catch (IOException e) {
-			e.printStackTrace();
+		    log.debug("init console mode", e);
 		}
 
 		initLogSystem();

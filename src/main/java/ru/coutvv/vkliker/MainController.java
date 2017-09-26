@@ -2,6 +2,8 @@ package ru.coutvv.vkliker;
 
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.coutvv.vkliker.api.NewsManager;
 import ru.coutvv.vkliker.api.WallManager;
 import ru.coutvv.vkliker.notify.Logger;
@@ -18,6 +20,8 @@ import static ru.coutvv.vkliker.util.Consts.APP_PROPERTIES_FILENAME;
  */
 public class MainController extends Observable {
 
+    private static final Log log = LogFactory.getLog(MainController.class);
+
     final static String STOP_ERROR = "Can't stop thread";
 
     private Future likerThread;
@@ -33,7 +37,7 @@ public class MainController extends Observable {
             nm = fac.createNewsManager();
             wallManager = fac.createWallManager();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("Error in construct", e);
         }
     }
 
